@@ -1,0 +1,37 @@
+@mixin flex($direction, $gap:0, $justify:center, $align:center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+}
+
+@mixin containerColors($container, $on-container, $stroke:none) {
+  background-color: $container;
+  color: $on-container;
+  border: $stroke;
+
+  @include ripple-effect(rgba($on-container, 0.12));
+}
+
+@mixin ripple-effect($color: rgba(255, 255, 255, 0.3)) {
+  position: relative;
+  overflow: hidden;  
+
+  & .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    background-color: $color;
+    pointer-events: none;
+  }
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+

@@ -1,0 +1,15 @@
+@use "color";
+@use "utils";
+
+.header {
+  @include utils.flex(row, 0, space-between);
+  background-color: color.$neutral-17;
+  width: 100%;
+  height: fit-content;
+  padding: 16px;
+ 
+  .nav-bar {
+    @include utils.flex(row, 8px);
+    width:fit-content;
+  }
+}

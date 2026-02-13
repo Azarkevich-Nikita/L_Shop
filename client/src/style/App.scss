@@ -1,0 +1,9 @@
+@use "color";
+
+body {
+  min-height: 100vh;
+  background-color: color.$neutral-4;
+  color: color.$neutral-90;
+  margin: 0;
+  padding: 0;
+}
