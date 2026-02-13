@@ -1,4 +1,5 @@
 import express from "express";
+// @ts-ignore
 import router from "./router/router.ts";
 
 const PORT: number = 8080;
