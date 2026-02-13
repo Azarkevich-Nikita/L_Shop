@@ -1,5 +1,7 @@
 // @ts-ignore
 import HashService from "../HashService.ts";
+//@ts-ignore
+import JsonStorageService from "../JsonStorageService.ts"
 
 class UserService {
     async getAllUsers() {
