@@ -1,6 +1,6 @@
+//@ts-ignore
+import { BasketItem } from "./basketItem.types.ts";
 export interface Basket {
-    id: number,
-    product_id: number,
-    weight: number,
-    price: number
+    user_id: number,
+    items: BasketItem[],
 }
