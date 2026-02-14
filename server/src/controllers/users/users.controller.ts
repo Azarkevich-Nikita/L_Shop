@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+// @ts-ignore
 import userService from "../../services/users/users.service.ts";
 
 class userController{
