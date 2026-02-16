@@ -1,4 +1,4 @@
-import type { BasketItem } from "./basketItem.types.js";
+import type { BasketItem } from "./basketItem.types.ts";
 
 export interface Basket {
     user_id: number;

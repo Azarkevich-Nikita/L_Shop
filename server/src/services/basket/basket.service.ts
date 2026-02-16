@@ -1,5 +1,5 @@
-import type { Basket } from "../../types/basket.types.js";
-import type { BasketItem } from "../../types/basketItem.types.js";
+import type { Basket } from "../../types/basket.types.ts";
+import type { BasketItem } from "../../types/basketItem.types.ts";
 
 
 export class BasketService {
