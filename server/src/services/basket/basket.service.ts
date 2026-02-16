@@ -3,9 +3,21 @@ import type { BasketItem } from "../../types/basketItem.types.ts";
 
 
 export class BasketService {
+
+    private basketItems: BasketItem = {
+        id: 1,
+        product_id: 1,
+        weight: 150,
+        price: 200,
+        quantity: 10,
+    };
+
     private basket: Basket = {
-        user_id:1,
-        items:[]
+        user_id: 1,
+        items: [
+            this.basketItems,
+            this.basketItems
+        ],
     }
 
     private deliveryPrice: number = 0;
@@ -45,7 +57,19 @@ export class BasketService {
     }
 
     setDelivery(type: 'pickup' | 'courier'):void {
-        this.deliveryPrice = type === 'courier' ? 15 : 0;
+        const price = this.getTotalPrice();
+        if(price > 3000 && type === 'courier') {
+            this.deliveryPrice = 200;
+        }
+        else if (price <= 3000 && price > 1000 && type === 'courier') {
+            this.deliveryPrice = 100;
+        }
+        else if (price > 1 && price <= 1000 && type === 'courier') {
+            this.deliveryPrice = 50;
+        }
+        else if (type === 'pickup') {
+            this.deliveryPrice = 0;
+        }
     }
 
     getTotalPrice():number {
