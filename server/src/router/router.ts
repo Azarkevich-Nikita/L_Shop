@@ -8,5 +8,7 @@ const router = express.Router();
 
 router.get("/users", userController.getAll)
 router.get("/basket", basketController.getAll)
+router.get("/basket/price", basketController.getTotalPrice)
+router.get("/basket/delivery", basketController.setDelivery)
 
 export default router;
