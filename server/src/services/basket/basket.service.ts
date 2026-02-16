@@ -15,8 +15,8 @@ export class BasketService {
     private basket: Basket = {
         user_id: 1,
         items: [
-            this.basketItems,
-            this.basketItems
+            {...this.basketItems, id: 1},
+            {...this.basketItems, id: 2},
         ],
     }
 
@@ -56,7 +56,7 @@ export class BasketService {
         this.basket.items = this.basket.items.filter(i => i.product_id !== productId);
     }
 
-    setDelivery(type: 'pickup' | 'courier'):void {
+    setDelivery(type: 'pickup' | 'courier'):number {
         const price = this.getTotalPrice();
         if(price > 3000 && type === 'courier') {
             this.deliveryPrice = 200;
@@ -70,11 +70,12 @@ export class BasketService {
         else if (type === 'pickup') {
             this.deliveryPrice = 0;
         }
+        return this.deliveryPrice;
     }
 
     getTotalPrice():number {
         const itemsTotal = this.basket.items.reduce(
-            (sum,item) => sum + item.price * item.quantity, 2
+            (sum,item) => sum + item.price * item.quantity, 0
         )
 
         return itemsTotal + this.deliveryPrice;
