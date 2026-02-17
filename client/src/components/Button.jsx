@@ -1,9 +1,14 @@
-import React, { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import '../style/button.scss';
 
-function Button({ variant = 'primary', size = 'l', className, children }){
+function Button({ variant = 'primary', size = 'l', className, children, onClick }){
   const [ripples, setRipples] = useState([]);
+
+  const handleClick = (event) => {
+    addRipple(event);
+    if (onClick) onClick(event);
+  }
 
   const removeRipple = (key) => {
     setRipples((prev) => prev.filter((ripple) => ripple.key !== key));
@@ -29,7 +34,8 @@ function Button({ variant = 'primary', size = 'l', className, children }){
   return (
     <button 
       className={clsx('btn', `btn--${variant}`, `btn--${size}`, className)}
-      onClick={addRipple} >
+      onClick={handleClick}
+    >
 
       {ripples.map((ripple) => (
         <span
