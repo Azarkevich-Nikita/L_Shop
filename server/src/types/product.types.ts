@@ -5,6 +5,6 @@ export interface Products {
     created_from: string,
     is_stock: boolean,
     weight: number,
-    compount: string[],
-    created_date: string
+    created_date: string,
+    property: string[]
 }
