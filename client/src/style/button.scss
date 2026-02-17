@@ -1,0 +1,43 @@
+@use "color";
+@use "utils";
+
+.btn {
+  position: relative;
+  overflow: hidden;
+
+  padding: 0px 16px;
+  border-radius: 28px;
+  width: fit-content;
+
+  &__content {
+    @include utils.flex(row, 10px, center, center);
+    position: relative;
+    z-index: 2;
+  }
+
+  .ripple {
+    z-index: 1;
+  } 
+
+  &--primary {
+    @include utils.containerColors(color.$primary-30, color.$primary-90);
+  }
+  &--secondary {
+    @include utils.containerColors(color.$secondary-30, color.$secondary-90);
+  }
+  &--tertiary {
+    @include utils.containerColors(color.$tertiary-30, color.$tertiary-90);
+  }
+  &--stroke {
+    @include utils.containerColors(transparent, color.$neutral-90, solid 1px color.$neutral-var-60);
+  }
+
+  &--l {
+    padding: 16px;
+    min-width: 128px;
+  }
+  &--m {
+    padding: 8px 16px;
+    min-width: 64px;
+  }
+}
