@@ -4,5 +4,5 @@ export interface User {
     email: string;
     phone: string;
     hashed_password: string;
-    created_at: number;
+    created_at: string;
 }

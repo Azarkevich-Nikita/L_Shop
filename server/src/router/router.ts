@@ -15,5 +15,7 @@ router.patch("/basket/decrease", basketController.decreaseQuantity);
 router.delete("/basket", basketController.removeItem);
 
 router.post("/basket/delivery", basketController.setDelivery);
+router.get("/users", userController.getAll)
+router.post("/users", userController.register)
 
 export default router;
