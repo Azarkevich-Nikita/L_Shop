@@ -5,6 +5,7 @@ import router from "./router/router.ts";
 const PORT: number = 8080;
 const app = express();
 
+app.use(express.json());
 app.use("/api", router);
 
 async function startApp() {
