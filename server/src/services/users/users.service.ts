@@ -6,6 +6,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 //@ts-ignore
 import type { User } from "../../types/user.types.ts"
+//@ts-ignore
+import type { UserDTO } from "../../DTO/UserDTO.ts";
+
+import crypto from "crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,10 +20,10 @@ class UserService {
         return jsonStorageService.readJSON(usersPath);
     }
 
-    async register(userData: any): Promise<User> {//TODO (replace any to UserDTO)
+    async register(userData: UserDTO): Promise<User> {
         const users: User[] = await jsonStorageService.readJSON(usersPath);
 
-        const existingUser = users.find((user: User) => user.email === userData.email);
+        const existingUser: User | undefined = users.find((user: User) => user.email === userData.email);
 
         if (existingUser) {
             throw new Error("Email already exists!");
@@ -35,9 +39,10 @@ class UserService {
         };
 
         users.push(newUser);
-        await jsonStorageService.writeJSON(usersPath, users.toString());
+        await jsonStorageService.writeJSON(usersPath, users);
         return newUser;
     }
+
 }
 
 export default new UserService();
