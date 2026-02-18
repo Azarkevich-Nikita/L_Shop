@@ -17,7 +17,7 @@
 
   .ripple {
     z-index: 1;
-  } 
+  }
 
   &--primary {
     @include utils.containerColors(color.$primary-30, color.$primary-90);
@@ -29,12 +29,15 @@
     @include utils.containerColors(color.$tertiary-30, color.$tertiary-90);
   }
   &--stroke {
-    @include utils.containerColors(transparent, color.$neutral-90, solid 1px color.$neutral-var-60);
+    @include utils.containerColors(transparent, color.$neutral-90);
+    outline: solid 1px color.$neutral-var-60;
+    outline-offset: -1px;
   }
 
   &--l {
     padding: 16px;
     min-width: 128px;
+    min-height: 56px;
   }
   &--m {
     padding: 8px 16px;

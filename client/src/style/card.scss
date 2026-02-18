@@ -1,0 +1,26 @@
+@use "color";
+@use "utils";
+
+.card {
+  @include utils.flex(column, 10px, center, center);
+  padding: 16px;
+  border-radius: 44px;
+  margin: auto auto;
+  width: 250px;
+  height: 350px;
+
+  background-color: color.$neutral-17;
+
+  .text-container {
+    @include utils.flex(column, 8px, left, start);
+    width: 100%;
+  }
+
+  .img {
+    height: 200px;
+    width: 100%;
+    background-color: color.$neutral-90;
+
+    border-radius: 28px;
+  }
+}
