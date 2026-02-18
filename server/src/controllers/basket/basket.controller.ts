@@ -2,37 +2,63 @@ import type { Request, Response } from "express";
 // @ts-ignore
 import BasketService from "../../services/basket/basket.service.ts";
 
-class basketController{
-    async getAll(req : Request, res : Response){
-        res.status(200).json(await BasketService.getBasket());
+class BasketController {
+
+    async getAll(req: Request, res: Response) {
+        const userId = 1;
+        const basket = await BasketService.getBasket(userId);
+        res.status(200).json(basket);
     }
-    async getTotalPrice(req : Request, res : Response){
-        res.status(200).json(await BasketService.getTotalPrice());
+
+    async getTotalPrice(req: Request, res: Response) {
+        const userId = 1;
+        const total = await BasketService.getTotalPrice(userId);
+        res.status(200).json({ total });
     }
-    async setDelivery(req : Request, res : Response){
-        const {type} = req.body;
-        BasketService.setDelivery(type);
-        res.status(200).json({message:"Delivery updated"});
+
+    async setDelivery(req: Request, res: Response) {
+        const userId = 1;
+        const { type } = req.body;
+
+        await BasketService.setDelivery(userId, type);
+
+        res.status(200).json({ message: "Delivery updated" });
     }
-    async addToBasket(req : Request, res : Response){
-        BasketService.addToBasket(req.body);
-        res.status(200).json({message:"Item added"});
+
+    async addToBasket(req: Request, res: Response) {
+        const userId = 1;
+
+        await BasketService.addToBasket(userId, req.body);
+
+        res.status(200).json({ message: "Item added" });
     }
-    async increaseQuantity(req : Request, res : Response){
+
+    async increaseQuantity(req: Request, res: Response) {
+        const userId = 1;
         const { productId } = req.body;
-        BasketService.increaseQuantity(productId);
-        res.status(200).json({message:"Quantity increased"});
+
+        await BasketService.increaseQuantity(userId, productId);
+
+        res.status(200).json({ message: "Quantity increased" });
     }
-    async decreaseQuantity(req : Request, res : Response){
+
+    async decreaseQuantity(req: Request, res: Response) {
+        const userId = 1;
         const { productId } = req.body;
-        BasketService.decreaseQuantity(productId);
-        res.status(200).json({message:"Quantity decreased"});
+
+        await BasketService.decreaseQuantity(userId, productId);
+
+        res.status(200).json({ message: "Quantity decreased" });
     }
-    async removeItem(req : Request, res : Response){
-        const {productId} = req.body;
-        BasketService.removeItem(productId);
-        res.status(200).json({message:"Item removed"});
+
+    async removeItem(req: Request, res: Response) {
+        const userId = 1;
+        const { productId } = req.body;
+
+        await BasketService.removeItem(userId, productId);
+
+        res.status(200).json({ message: "Item removed" });
     }
 }
 
-export default new basketController();
+export default new BasketController();
