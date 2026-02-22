@@ -6,7 +6,12 @@ class JsonStorageService{
     }
 
     async readJSON(file: string){
-        return JSON.parse(await fs.readFile(file, 'utf-8'));
+        try {
+            return JSON.parse(await fs.readFile(file, 'utf-8'));
+        }
+        catch(err){
+            console.error(err);
+        }
     }
 }
 
