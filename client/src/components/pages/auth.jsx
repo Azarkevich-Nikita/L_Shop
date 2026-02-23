@@ -26,7 +26,7 @@ function Auth() {
   };
 
   const formFields = [
-    { id: "login", label: "Логин", type: "text", icon: true },
+    { id: "login", label: "Логин", type: "text", icon: false },
     { id: "email", label: "Email", type: "email", icon: false },
     { id: "phone", label: "Номер телефона", type: "tel", icon: false },
     { id: "password", label: "Пароль", type: "password", icon: false },
@@ -39,7 +39,7 @@ function Auth() {
   ];
 
   return (
-    <div className="auth-page">
+    <div className="auth-page auth-page-register">
       <header className="auth-header">
         <nav
           className="auth-nav"
@@ -71,7 +71,7 @@ function Auth() {
         </button>
       </header>
 
-      <main className="auth-main">
+      <main className="auth-main auth-main-register">
         <h1 className="auth-title">Регистрация</h1>
 
         <form
@@ -154,7 +154,7 @@ function Auth() {
           <Button
             type="submit"
             variant="primary"
-            size="l"
+            size="m"
             className="auth-submit-button"
           >
             Зарегистрироваться
@@ -170,7 +170,7 @@ function Auth() {
       </main>
 
       <footer className="auth-footer">
-        <p>© 2025 DermoLand</p>
+        <p>© 2026 DermoLand</p>
       </footer>
     </div>
   );

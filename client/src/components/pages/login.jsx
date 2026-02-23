@@ -24,7 +24,7 @@ function Login() {
   };
 
   const formFields = [
-    { id: "login", label: "Логин/Email/Номер телефона", type: "text", icon: true },
+    { id: "login", label: "Логин/Email/Номер телефона", type: "text", icon: false },
     { id: "password", label: "Пароль", type: "password", icon: false },
     {
       id: "confirmPassword",
@@ -140,7 +140,7 @@ function Login() {
           <Button
             type="submit"
             variant="primary"
-            size="l"
+            size="m"
             className="auth-submit-button"
           >
             Войти
@@ -162,7 +162,7 @@ function Login() {
       </main>
 
       <footer className="auth-footer">
-        <p>© 2025 DermoLand</p>
+        <p>© 2026 DermoLand</p>
       </footer>
     </div>
   );
