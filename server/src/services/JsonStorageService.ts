@@ -1,12 +1,17 @@
 import fs from "node:fs/promises";
 
 class JsonStorageService{
-    async writeJSON(file: string, data:string){
+    async writeJSON<T>(file: string, data: T): Promise<void> {
         await fs.writeFile(file, JSON.stringify(data, null, 2));
     }
 
     async readJSON(file: string){
-        return JSON.parse(await fs.readFile(file, 'utf-8'));
+        try {
+            return JSON.parse(await fs.readFile(file, 'utf-8'));
+        }
+        catch(err){
+            console.error(err);
+        }
     }
 }
 

@@ -3,6 +3,8 @@ import express from "express";
 import userController from "../controllers/users/users.controller.ts"
 //@ts-ignore
 import basketController from "../controllers/basket/basket.controller.ts";
+//@ts-ignore
+import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const router = express.Router();
 
@@ -15,7 +17,11 @@ router.patch("/basket/decrease", basketController.decreaseQuantity);
 router.delete("/basket", basketController.removeItem);
 
 router.post("/basket/delivery", basketController.setDelivery);
+
+
 router.get("/users", userController.getAll)
-router.post("/users", userController.register)
+router.post("/auth/register", userController.register)
+router.post("/auth/login", userController.login)
+router.get("/auth/me", authMiddleware, userController.me)
 
 export default router;
