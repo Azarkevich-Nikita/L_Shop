@@ -67,8 +67,6 @@ class userController{
 
             const userInfo: Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'> = await userService.getUserById(session.userId);
 
-            console.log(userInfo)
-
             res.status(200).json({userInfo: userInfo});
         }
         catch (error: unknown) {

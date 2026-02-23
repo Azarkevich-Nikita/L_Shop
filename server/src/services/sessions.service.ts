@@ -5,6 +5,8 @@ import jsonStorageService from "./JsonStorageService.ts";
 
 import {fileURLToPath} from "url";
 import path from "path";
+//@ts-ignore
+import JsonStorageService from "./JsonStorageService.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,22 +31,26 @@ class SessionsService {
     }
 
     async getSessionInfoBySessionId(sid: string): Promise<Session> {
-        console.log("РЕАЛЬНЫЙ ПУТЬ ПОИСКА:", sessionsPath);
-
         const sessions: Session[] = await jsonStorageService.readJSON(sessionsPath);
         const session = sessions.find(s => s.sessionId === sid);
 
-        // 1. Проверяем, существует ли сессия вообще
         if (!session) {
             throw Error("Session not found");
         }
 
-        // 2. Проверяем срок действия
         if (Date.now() > session.expiresAt) {
             throw Error("Session expired");
         }
 
         return session;
+    }
+
+    async deleteSession(session: Session): Promise<void>{
+        let sessions: Session[] = await JsonStorageService.readJSON(sessionsPath);
+
+        sessions = sessions.filter(s => s.userId != session.userId);
+
+        await jsonStorageService.writeJSON(sessionsPath, sessions);
     }
 
 }
