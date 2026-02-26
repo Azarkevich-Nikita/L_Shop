@@ -63,9 +63,10 @@ class userController{
 
     async me(req: Request, res : Response) {
         try {
-            const session: Session = await sessionService.getSessionInfoBySessionId(req.cookies.currSid);
-
-            const userInfo: Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'> = await userService.getUserById(session.userId);
+            if(!req.userId){
+                throw Error("No user_id");
+            }
+            const userInfo: Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'> = await userService.getUserById(req.userId);
 
             res.status(200).json({userInfo: userInfo});
         }
