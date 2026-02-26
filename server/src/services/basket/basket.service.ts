@@ -3,6 +3,7 @@ import path from "path";
 //@ts-ignore
 import JsonStorageService from "../JsonStorageService.ts";
 import type { BasketItem } from "../../types/basketItem.types.ts";
+import type { Basket } from "../../types/basket.types.ts";
 import {fileURLToPath} from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,8 +21,8 @@ export class BasketService {
     }
 
     async getBasket(userId: number) {
-        const data = await this.getData();
-        return data.basket.find((b: any) => b.user_id === userId) || null;
+        const data = await JsonStorageService.readJSON(filePath);
+        return data.find((b: Basket) => b.user_id === userId) || null;
     }
 
     private getOrCreateBasket(data: any, userId: number) {
