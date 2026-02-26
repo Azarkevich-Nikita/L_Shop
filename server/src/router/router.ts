@@ -8,7 +8,7 @@ import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const router = express.Router();
 
-router.get("/basket", basketController.getAll);
+router.get("/basket", basketController.getBasketByUserID);
 router.get("/basket/price", basketController.getTotalPrice);
 
 router.post("/basket", basketController.addToBasket);

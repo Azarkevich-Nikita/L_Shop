@@ -4,10 +4,19 @@ import BasketService from "../../services/basket/basket.service.ts";
 
 class BasketController {
 
-    async getAll(req: Request, res: Response) {
-        const userId = 1;
+    async getBasketByUserID(req: Request, res: Response) {
+        try{
+        const userId = 1771395147647;//TODO
         const basket = await BasketService.getBasket(userId);
         res.status(200).json(basket);
+        }
+        catch (error: unknown) {
+            if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
+                res.status(400).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
     }
 
     async getTotalPrice(req: Request, res: Response) {
@@ -26,7 +35,7 @@ class BasketController {
     }
 
     async addToBasket(req: Request, res: Response) {
-        const userId = 1;
+        const userId = 1771395147647;//TODO
 
         await BasketService.addToBasket(userId, req.body);
 
@@ -34,7 +43,7 @@ class BasketController {
     }
 
     async increaseQuantity(req: Request, res: Response) {
-        const userId = 1;
+        const userId = 1771395147647;//TODO
         const { productId } = req.body;
 
         await BasketService.increaseQuantity(userId, productId);
