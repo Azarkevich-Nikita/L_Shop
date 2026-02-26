@@ -3,5 +3,15 @@
     "sessionId": "ab123",
     "userId": 4,
     "expiresAt": 1700000000000
+  },
+  {
+    "sessionId": "b8d79549-6859-44ca-8098-c991b93b10df",
+    "userId": 1772131374896,
+    "expiresAt": 1772131975008
+  },
+  {
+    "sessionId": "90322a44-f6c7-4b38-9d64-11e4e9ae2fa6",
+    "userId": 1772131374896,
+    "expiresAt": 1772132690620
   }
 ]
