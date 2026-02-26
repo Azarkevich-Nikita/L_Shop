@@ -32,5 +32,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         return res.status(401).json({error: "Session expired"});
     }
 
+    req.userId = session.userId;
     next();
 }
