@@ -26,5 +26,6 @@ router.post("/auth/login", userController.login)
 router.get("/auth/me", authMiddleware, userController.me)
 
 router.get("/catalog", authMiddleware, productsController.getFullCatalogue)
+router.get("/catalog/:id", productsController.getProductById)
 
 export default router;

@@ -6,13 +6,14 @@ import path from "path";
 import { fileURLToPath } from "url";
 //@ts-ignore
 import type { Product } from "../../types/product.types.ts"
+import type {User} from "../../types/user.types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const usersPath = path.join(__dirname, "../../../database/products.json");
 
 class ProductService {
-    async getFullCatalogue(): Promise<Pick<Product, 'id' | 'title' | 'price'>[]> {
+    async getFullCatalog(): Promise<Pick<Product, 'id' | 'title' | 'price'>[]> {
         const products: Product[] = await jsonStorageService.readJSON(usersPath);
 
         const productsCards: Pick<Product, 'id' | 'title' | 'price'>[] = products.map(p => p = {
@@ -22,6 +23,12 @@ class ProductService {
         })
 
         return productsCards;
+    }
+
+    async getProductById(id: string | string[]): Promise<Product> {
+        const products: Product[] = await jsonStorageService.readJSON(usersPath);
+
+        return products.find((prod: Product) => prod.id == id);
     }
 }
 
