@@ -3,39 +3,53 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import '../../style/auth.scss';
 
-function Login() {
+interface AuthForm {
+  login: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
+
+type Field = {
+  id: keyof AuthForm;
+  label: string;
+  type: string;
+  icon: boolean;
+}
+
+function Auth(): JSX.Element {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AuthForm>({
     login: "",
+    email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: keyof AuthForm, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
   };
 
-  const formFields = [
-    { id: "login", label: "Логин/Email/Номер телефона", type: "text", icon: false },
+  const formFields: Field[] = [
+    { id: "login", label: "Логин", type: "text", icon: false },
+    { id: "email", label: "Email", type: "email", icon: false },
+    { id: "phone", label: "Номер телефона", type: "tel", icon: false },
     { id: "password", label: "Пароль", type: "password", icon: false },
-    {
-      id: "confirmPassword",
-      label: "Повторить пароль",
-      type: "password",
-      icon: false,
-    },
+    { id: "confirmPassword", label: "Повторить пароль", type: "password", icon: false },
   ];
 
   return (
-    <div className="auth-page auth-page-login">
+    <div className="auth-page auth-page-register">
       <header className="auth-header">
         <nav
           className="auth-nav"
@@ -59,16 +73,16 @@ function Login() {
           </Button>
         </nav>
 
-        <button className="auth-button-login" onClick={() => navigate('/auth')}>
-          <span>Зарегистрироваться</span>
+        <button className="auth-button-login" onClick={() => navigate('/login')}>
+          <span>Войти</span>
           <svg style={{ position: 'relative', width: '24px', height: '24px', aspectRatio: '1' }} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="#e8def8"/>
           </svg>
         </button>
       </header>
 
-      <main className="auth-main auth-main-login">
-        <h1 className="auth-title">Авторизация</h1>
+      <main className="auth-main auth-main-register">
+        <h1 className="auth-title">Регистрация</h1>
 
         <form
           onSubmit={handleSubmit}
@@ -77,31 +91,29 @@ function Login() {
         >
           {formFields.map((field, index) => (
             <div
-              key={field.id}
+              key={String(field.id)}
               className="auth-field-container"
-              style={{ marginTop: index === 0 ? "12px" : "8px" }}
+              style={{ marginTop: index === 0 ? "16px" : "8px" }}
             >
               <label
                 htmlFor={field.id}
                 className={`auth-label ${
                   field.id === "login"
                     ? "auth-label-login"
-                    : field.id === "password"
-                      ? "auth-label-password"
-                      : "auth-label-confirm"
+                    : field.id === "email"
+                      ? "auth-label-email"
+                      : field.id === "phone"
+                        ? "auth-label-phone"
+                        : field.id === "password"
+                          ? "auth-label-password"
+                          : "auth-label-confirm"
                 }`}
               >
                 {field.label}
               </label>
 
               <div
-                className={`auth-input-wrapper ${
-                  field.icon ? "auth-input-wrapper-with-icon" : ""
-                } ${
-                  field.id === "confirmPassword"
-                    ? "auth-input-wrapper-confirm"
-                    : ""
-                }`}
+                className={`auth-input-wrapper ${field.icon ? "auth-input-wrapper-with-icon" : ""} ${field.id === "email" ? "auth-input-wrapper-email" : field.id === "confirmPassword" ? "auth-input-wrapper-confirm" : ""}`}
               >
                 {field.icon && (
                   <svg
@@ -118,19 +130,23 @@ function Login() {
                 <input
                   type={field.type}
                   id={field.id}
-                  name={field.id}
-                  value={formData[field.id]}
+                  name={String(field.id)}
+                  value={formData[field.id] as string}
                   onChange={(e) => handleInputChange(field.id, e.target.value)}
                   className="auth-input"
                   aria-required="true"
                   autoComplete={
                     field.id === "login"
                       ? "username"
-                      : field.id === "password"
-                        ? "current-password"
-                        : field.id === "confirmPassword"
-                          ? "new-password"
-                          : "off"
+                      : field.id === "email"
+                        ? "email"
+                        : field.id === "phone"
+                          ? "tel"
+                          : field.id === "password"
+                            ? "new-password"
+                            : field.id === "confirmPassword"
+                              ? "new-password"
+                              : "off"
                   }
                 />
               </div>
@@ -143,20 +159,14 @@ function Login() {
             size="m"
             className="auth-submit-button"
           >
-            Войти
+            Зарегистрироваться
           </Button>
 
-          <p className="auth-terms auth-terms-login">
-            <span>Нет аккаунта? </span>
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/auth');
-              }}
-            >
-              Зарегистрироваться
-            </a>
+          <p className="auth-terms">
+            <span>Регистрируясь, вы соглашаетесь с </span>
+            <a href="#terms">условиями использования</a>
+            <span> и </span>
+            <a href="#privacy">политикой конфиденциальности</a>
           </p>
         </form>
       </main>
@@ -168,4 +178,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Auth;

@@ -31,6 +31,13 @@
   padding: 0.75rem 0;
 }
 
+/* Add gentle horizontal padding for header only on auth pages
+   so header buttons (Главная/Зарегистрироваться) are not flush to edges */
+.auth-page .auth-header {
+  padding-left: clamp(0.75rem, 3vw, 1.5rem);
+  padding-right: clamp(0.75rem, 3vw, 1.5rem);
+}
+
 
 .auth-header > nav {
   flex: 1 1 auto;
