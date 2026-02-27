@@ -4,75 +4,146 @@ import Button from '../Button';
 import '../../style/auth.scss';
 
 interface AuthForm {
-  login: string;
+  name: string;
   email: string;
   phone: string;
   password: string;
   confirmPassword: string;
 }
 
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
 type Field = {
   id: keyof AuthForm;
   label: string;
   type: string;
-  icon: boolean;
 }
 
-function Auth(): JSX.Element {
+const validate = (formData: AuthForm): FormErrors => {
+  const errors: FormErrors = {};
+
+  // Имя — только английские буквы, минимум 2 символа
+  if (!formData.name.trim()) {
+    errors.name = "Введите имя";
+  } else if (!/^[a-zA-Z]+$/.test(formData.name)) {
+    errors.name = "Имя должно содержать только латинские буквы";
+  } else if (formData.name.length < 2) {
+    errors.name = "Имя должно быть не менее 2 символов";
+  }
+
+  // Email
+  if (!formData.email.trim()) {
+    errors.email = "Введите email";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    errors.email = "Введите корректный email (например: user@mail.ru)";
+  }
+
+  // Телефон — цифры, +, -, пробелы, минимум 10 цифр
+  if (!formData.phone.trim()) {
+    errors.phone = "Введите номер телефона";
+  } else if (!/^\+?[\d\s\-()]{10,}$/.test(formData.phone)) {
+    errors.phone = "Введите корректный номер (например: +79991234567)";
+  }
+
+  // Пароль
+  if (!formData.password) {
+    errors.password = "Введите пароль";
+  } else if (formData.password.length < 6) {
+    errors.password = "Пароль должен быть не менее 6 символов";
+  }
+
+  // Подтверждение пароля
+  if (!formData.confirmPassword) {
+    errors.confirmPassword = "Повторите пароль";
+  } else if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = "Пароли не совпадают";
+  }
+
+  return errors;
+};
+
+function Auth() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<AuthForm>({
-    login: "",
+    name: "",
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (field: keyof AuthForm, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    // Для имени — не допускаем нелатинские символы
+    if (field === "name" && value && !/^[a-zA-Z]*$/.test(value)) return;
+
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Убираем ошибку поля при вводе
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    setServerError(null);
+
+    const validationErrors = validate(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setServerError(data?.error || "Неверный логин или пароль");
+        return;
+      }
+
+      navigate('/login');
+    } catch {
+      setServerError("Не удалось подключиться к серверу. Проверьте, что бэкенд запущен на порту 8080.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formFields: Field[] = [
-    { id: "login", label: "Логин", type: "text", icon: false },
-    { id: "email", label: "Email", type: "email", icon: false },
-    { id: "phone", label: "Номер телефона", type: "tel", icon: false },
-    { id: "password", label: "Пароль", type: "password", icon: false },
-    { id: "confirmPassword", label: "Повторить пароль", type: "password", icon: false },
+    { id: "name", label: "Имя (только латиница)", type: "text" },
+    { id: "email", label: "Email", type: "email" },
+    { id: "phone", label: "Номер телефона", type: "tel" },
+    { id: "password", label: "Пароль", type: "password" },
+    { id: "confirmPassword", label: "Повторить пароль", type: "password" },
   ];
 
   return (
     <div className="auth-page auth-page-register">
       <header className="auth-header">
-        <nav
-          className="auth-nav"
-          role="navigation"
-          aria-label="Main navigation"
-        >
-          <Button
-            variant="stroke"
-            size="m"
-            onClick={() => navigate('/')}
-          >
-            Главная
-          </Button>
-
-          <Button
-            variant="stroke"
-            size="m"
-            onClick={() => navigate('/catalogue')}
-          >
-            Каталог
-          </Button>
+        <nav className="auth-nav" role="navigation" aria-label="Main navigation">
+          <Button variant="stroke" size="m" onClick={() => navigate('/')}>Главная</Button>
+          <Button variant="stroke" size="m" onClick={() => navigate('/catalogue')}>Каталог</Button>
         </nav>
-
         <button className="auth-button-login" onClick={() => navigate('/login')}>
           <span>Войти</span>
           <svg style={{ position: 'relative', width: '24px', height: '24px', aspectRatio: '1' }} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,83 +154,31 @@ function Auth(): JSX.Element {
 
       <main className="auth-main auth-main-register">
         <h1 className="auth-title">Регистрация</h1>
-
-        <form
-          onSubmit={handleSubmit}
-          className="auth-form"
-          noValidate
-        >
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           {formFields.map((field, index) => (
-            <div
-              key={String(field.id)}
-              className="auth-field-container"
-              style={{ marginTop: index === 0 ? "16px" : "8px" }}
-            >
-              <label
-                htmlFor={field.id}
-                className={`auth-label ${
-                  field.id === "login"
-                    ? "auth-label-login"
-                    : field.id === "email"
-                      ? "auth-label-email"
-                      : field.id === "phone"
-                        ? "auth-label-phone"
-                        : field.id === "password"
-                          ? "auth-label-password"
-                          : "auth-label-confirm"
-                }`}
-              >
-                {field.label}
-              </label>
-
-              <div
-                className={`auth-input-wrapper ${field.icon ? "auth-input-wrapper-with-icon" : ""} ${field.id === "email" ? "auth-input-wrapper-email" : field.id === "confirmPassword" ? "auth-input-wrapper-confirm" : ""}`}
-              >
-                {field.icon && (
-                  <svg
-                    style={{ position: 'relative', width: '16px', height: '16px', aspectRatio: '1', flexShrink: 0 }}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="#1c1b1f"/>
-                  </svg>
-                )}
+            <div key={field.id} className="auth-field-container" style={{ marginTop: index === 0 ? "16px" : "8px" }}>
+              <label htmlFor={field.id} className={`auth-label auth-label-${field.id}`}>{field.label}</label>
+              <div className="auth-input-wrapper">
                 <input
                   type={field.type}
                   id={field.id}
-                  name={String(field.id)}
-                  value={formData[field.id] as string}
+                  name={field.id}
+                  value={formData[field.id]}
                   onChange={(e) => handleInputChange(field.id, e.target.value)}
-                  className="auth-input"
+                  className={`auth-input ${errors[field.id] ? "auth-input--error" : ""}`}
                   aria-required="true"
-                  autoComplete={
-                    field.id === "login"
-                      ? "username"
-                      : field.id === "email"
-                        ? "email"
-                        : field.id === "phone"
-                          ? "tel"
-                          : field.id === "password"
-                            ? "new-password"
-                            : field.id === "confirmPassword"
-                              ? "new-password"
-                              : "off"
-                  }
                 />
               </div>
+              {errors[field.id] && (
+                <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors[field.id]}</p>
+              )}
             </div>
           ))}
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="m"
-            className="auth-submit-button"
-          >
-            Зарегистрироваться
+          {serverError && <p style={{ color: "red", fontSize: "14px", marginTop: "8px" }}>{serverError}</p>}
+
+          <Button type="submit" variant="primary" size="m" className="auth-submit-button" disabled={loading}>
+            {loading ? "Загрузка..." : "Зарегистрироваться"}
           </Button>
 
           <p className="auth-terms">

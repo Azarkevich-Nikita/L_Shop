@@ -1,7 +1,32 @@
 [
   {
-    "sessionId": "ab123",
-    "userId": 4,
-    "expiresAt": 1700000000000
+    "sessionId": "e30391a2-498e-4d0f-add9-3d04af5a8853",
+    "userId": 1772219269650,
+    "expiresAt": 1772219869765
+  },
+  {
+    "sessionId": "2bcbf9d8-b350-4f8a-bfb8-d317723ee6f8",
+    "userId": 1772219269650,
+    "expiresAt": 1772220006607
+  },
+  {
+    "sessionId": "de0049de-58c0-4335-9552-532756b10caa",
+    "userId": 1772219269650,
+    "expiresAt": 1772220245890
+  },
+  {
+    "sessionId": "bb7e2125-d957-456f-a00a-d2ffc771f291",
+    "userId": 1772219269650,
+    "expiresAt": 1772220521861
+  },
+  {
+    "sessionId": "a4e76878-77a3-4dc7-8af8-5b5de39179d7",
+    "userId": 1772219269650,
+    "expiresAt": 1772220578550
+  },
+  {
+    "sessionId": "67cfdef7-2f8a-44f9-821a-c1a520accc14",
+    "userId": 1772219269650,
+    "expiresAt": 1772220658292
   }
 ]

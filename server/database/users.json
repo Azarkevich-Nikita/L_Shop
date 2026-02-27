@@ -1,10 +1,10 @@
 [
   {
-    "id": 1771395147647,
-    "name": "Nikita",
-    "email": "mykes",
-    "phone": "80441212321",
-    "hashed_password": "$2b$10$r9JhoSS8NVoTQPGSZ/oyIOn31ZfiKsfFXBiNoa79nVst5WdYNaJ9e",
-    "created_at": "2026-02-18"
+    "id": 1772219269650,
+    "name": "nikitaaa",
+    "email": "nikita@gmail.com",
+    "phone": "+123123111111",
+    "hashed_password": "$2b$10$IJQLsGCyDA51wQ5WLBZLLOvw6iHTiMgIL7wxUqmIba3LiIQbgCILK",
+    "created_at": "2026-02-27"
   }
 ]

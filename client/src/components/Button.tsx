@@ -18,9 +18,11 @@ interface ButtonProps {
   className?: string;
   children?: React.ReactNode;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
-function Button({ variant = 'primary', size = 'l', className, children, onClick }: ButtonProps) {
+function Button({ variant = 'primary', size = 'l', className, children, onClick, type = 'button', disabled }: ButtonProps) {
   const [ripples, setRipples] = useState<Ripple[]>([]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

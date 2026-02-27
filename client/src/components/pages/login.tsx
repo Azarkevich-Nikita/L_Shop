@@ -4,69 +4,112 @@ import Button from '../Button';
 import '../../style/auth.scss';
 
 interface LoginForm {
-  login: string;
+  identifier: string;
   password: string;
-  confirmPassword: string;
 }
 
-type Field = {
-  id: keyof LoginForm;
-  label: string;
-  type: string;
-  icon: boolean;
+interface FormErrors {
+  identifier?: string;
+  password?: string;
 }
 
-function Login(): JSX.Element {
+// Определяем тип идентификатора
+const detectIdentifierType = (value: string): "email" | "phone" | "name" | null => {
+  if (!value.trim()) return null;
+  if (value.includes("@")) return "email";
+  if (/^\+?[\d\s\-()]{7,}$/.test(value)) return "phone";
+  if (/^[a-zA-Z]{2,}$/.test(value)) return "name";
+  return null;
+};
+
+const validate = (formData: LoginForm): FormErrors => {
+  const errors: FormErrors = {};
+
+  if (!formData.identifier.trim()) {
+    errors.identifier = "Введите email";
+  } else {
+    const type = detectIdentifierType(formData.identifier);
+    if (!type) {
+      errors.identifier = "Введите корректный email, телефон или имя (только латиница)";
+    } else if (type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.identifier)) {
+      errors.identifier = "Введите корректный email (например: user@mail.ru)";
+    }
+  }
+
+  if (!formData.password) {
+    errors.password = "Введите пароль";
+  } else if (formData.password.length < 6) {
+    errors.password = "Пароль должен быть не менее 6 символов";
+  }
+
+  return errors;
+};
+
+function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginForm>({
-    login: "",
+    identifier: "",
     password: "",
-    confirmPassword: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (field: keyof LoginForm, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-  };
+    setServerError(null);
 
-  const formFields: Field[] = [
-    { id: "login", label: "Логин/Email/Номер телефона", type: "text", icon: false },
-    { id: "password", label: "Пароль", type: "password", icon: false },
-    { id: "confirmPassword", label: "Повторить пароль", type: "password", icon: false },
-  ];
+    const validationErrors = validate(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Отправляем в поле email — бэкенд сам разберёт тип
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.identifier,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setServerError(data?.error || "Неверный логин или пароль");
+        return;
+      }
+
+      const data = await response.json();
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      navigate('/');
+    } catch {
+      setServerError("Не удалось подключиться к серверу. Проверьте, что бэкенд запущен на порту 8080.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="auth-page auth-page-login">
       <header className="auth-header">
-        <nav
-          className="auth-nav"
-          role="navigation"
-          aria-label="Main navigation"
-        >
-          <Button
-            variant="stroke"
-            size="m"
-            onClick={() => navigate('/')}
-          >
-            Главная
-          </Button>
-
-          <Button
-            variant="stroke"
-            size="m"
-            onClick={() => navigate('/catalogue')}
-          >
-            Каталог
-          </Button>
+        <nav className="auth-nav" role="navigation" aria-label="Main navigation">
+          <Button variant="stroke" size="m" onClick={() => navigate('/')}>Главная</Button>
+          <Button variant="stroke" size="m" onClick={() => navigate('/catalogue')}>Каталог</Button>
         </nav>
-
         <button className="auth-button-login" onClick={() => navigate('/auth')}>
           <span>Зарегистрироваться</span>
           <svg style={{ position: 'relative', width: '24px', height: '24px', aspectRatio: '1' }} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -77,86 +120,58 @@ function Login(): JSX.Element {
 
       <main className="auth-main auth-main-login">
         <h1 className="auth-title">Авторизация</h1>
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
 
-        <form
-          onSubmit={handleSubmit}
-          className="auth-form"
-          noValidate
-        >
-          {formFields.map((field, index) => (
-            <div
-              key={String(field.id)}
-              className="auth-field-container"
-              style={{ marginTop: index === 0 ? "12px" : "8px" }}
-            >
-              <label
-                htmlFor={field.id}
-                className={`auth-label ${
-                  field.id === "login"
-                    ? "auth-label-login"
-                    : field.id === "password"
-                      ? "auth-label-password"
-                      : "auth-label-confirm"
-                }`}
-              >
-                {field.label}
-              </label>
-
-              <div
-                className={`auth-input-wrapper ${field.icon ? "auth-input-wrapper-with-icon" : ""} ${field.id === "confirmPassword" ? "auth-input-wrapper-confirm" : ""}`}
-              >
-                {field.icon && (
-                  <svg
-                    style={{ position: 'relative', width: '16px', height: '16px', aspectRatio: '1', flexShrink: 0 }}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="#1c1b1f"/>
-                  </svg>
-                )}
-                <input
-                  type={field.type}
-                  id={field.id}
-                  name={String(field.id)}
-                  value={formData[field.id] as string}
-                  onChange={(e) => handleInputChange(field.id, e.target.value)}
-                  className="auth-input"
-                  aria-required="true"
-                  autoComplete={
-                    field.id === "login"
-                      ? "username"
-                      : field.id === "password"
-                        ? "current-password"
-                        : field.id === "confirmPassword"
-                          ? "new-password"
-                          : "off"
-                  }
-                />
-              </div>
+          <div className="auth-field-container" style={{ marginTop: "12px" }}>
+            <label htmlFor="identifier" className="auth-label auth-label-identifier">
+              Email
+            </label>
+            <div className="auth-input-wrapper">
+              <input
+                type="text"
+                id="identifier"
+                name="identifier"
+                value={formData.identifier}
+                onChange={(e) => handleInputChange("identifier", e.target.value)}
+                className={`auth-input ${errors.identifier ? "auth-input--error" : ""}`}
+                aria-required="true"
+                autoComplete="username"
+                placeholder="user@mail.ru"
+              />
             </div>
-          ))}
+            {errors.identifier && (
+              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.identifier}</p>
+            )}
+          </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="m"
-            className="auth-submit-button"
-          >
-            Войти
+          <div className="auth-field-container" style={{ marginTop: "8px" }}>
+            <label htmlFor="password" className="auth-label auth-label-password">Пароль</label>
+            <div className="auth-input-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
+                aria-required="true"
+                autoComplete="current-password"
+              />
+            </div>
+            {errors.password && (
+              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.password}</p>
+            )}
+          </div>
+
+          {serverError && <p style={{ color: "red", fontSize: "14px", marginTop: "8px" }}>{serverError}</p>}
+
+          <Button type="submit" variant="primary" size="m" className="auth-submit-button" disabled={loading}>
+            {loading ? "Загрузка..." : "Войти"}
           </Button>
 
           <p className="auth-terms auth-terms-login">
             <span>Нет аккаунта? </span>
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/auth');
-              }}
-            >
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/auth'); }}>
               Зарегистрироваться
             </a>
           </p>
