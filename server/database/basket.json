@@ -1,13 +1,13 @@
 [
   {
     "user_id": 1771395147647,
-    "items":[
+    "items": [
       {
         "id": 1,
         "product_id": 1,
         "weight": 67,
         "price": 49,
-        "quantity": 12
+        "quantity": 13
       },
       {
         "id": 2,
@@ -16,6 +16,6 @@
         "price": 13,
         "quantity": 1
       }
-    ] 
+    ]
   }
 ]
