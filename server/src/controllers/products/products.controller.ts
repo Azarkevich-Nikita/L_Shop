@@ -13,7 +13,7 @@ class productController{
             }
             const catalog: Pick<Product, 'id' | 'title' | 'price'>[] = await productsService.getFullCatalog();
 
-            res.status(200).json({catalog});
+            res.status(200).json(catalog);
         }
         catch (error: unknown) {
             if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
@@ -32,7 +32,7 @@ class productController{
 
             const product: Product = await productsService.getProductById(req.params.id)
 
-            return product != null ? res.status(200).json({product}) : res.status(500).json({error: "Unknown error occurred"});
+            return product != null ? res.status(200).json(product) : res.status(500).json({error: "Unknown error occurred"});
         }
         catch (error: unknown) {
             if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
