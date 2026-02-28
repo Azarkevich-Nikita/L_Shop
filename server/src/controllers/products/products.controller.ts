@@ -11,7 +11,7 @@ class productController{
             if(!req.userId){
                 throw Error("No user_id");
             }
-            const catalog: Pick<Product, 'id' | 'title' | 'price'>[] = await productsService.getFullCatalog();
+            const catalog: Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[] = await productsService.getFullCatalog();
 
             res.status(200).json(catalog);
         }

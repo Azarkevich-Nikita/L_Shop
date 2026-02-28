@@ -13,13 +13,14 @@ const __dirname = path.dirname(__filename);
 const usersPath = path.join(__dirname, "../../../database/products.json");
 
 class ProductService {
-    async getFullCatalog(): Promise<Pick<Product, 'id' | 'title' | 'price'>[]> {
+    async getFullCatalog(): Promise<Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[]> {
         const products: Product[] = await jsonStorageService.readJSON(usersPath);
 
-        const productsCards: Pick<Product, 'id' | 'title' | 'price'>[] = products.map(p => p = {
+        const productsCards: Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[] = products.map(p => p = {
             id: p.id,
             title: p.title,
-            price: p.price
+            price: p.price,
+            image_url: p.image_url
         })
 
         return productsCards;
