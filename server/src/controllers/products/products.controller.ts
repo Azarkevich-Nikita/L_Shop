@@ -9,9 +9,14 @@ class productController{
     async getFullCatalogue(req : Request, res : Response){
         try {
             const {
+                title,
                 created_from,
                 min_price,
                 max_price,
+                min_weight,
+                max_weight,
+                is_stock,
+                created_date,
                 sort,
                 order,
                 page,
@@ -19,9 +24,13 @@ class productController{
             } = req.query;
 
             const products: Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[] = await productsService.getProducts({
+                title: title as string,
                 created_from: created_from as string,
                 min_price: min_price ? Number(min_price) : undefined,
                 max_price: max_price ? Number(max_price) : undefined,
+                min_weight: min_weight ? Number(min_weight) : undefined,
+                max_weight: max_weight ? Number(max_weight) : undefined,
+                is_stock: is_stock ? Boolean(is_stock) : undefined,
                 sort: sort as 'price' | 'created_at',
                 order: order as 'asc' | 'desc',
                 page: page ? Number(page) : 1,

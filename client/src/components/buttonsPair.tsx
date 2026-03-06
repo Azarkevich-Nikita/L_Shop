@@ -23,7 +23,6 @@ function ButtonsPair({ label, firstImg, secondImg, variant = "primary", size = "
         variant="primary"
         size="l"
       >
-        {label}
         <img src={firstImg} alt="" />
       </Button>
       <Button
