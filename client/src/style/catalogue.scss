@@ -1,0 +1,20 @@
+@use "color";
+@use "utils";
+
+.flex-container {
+  @include utils.flex(row, 16px, flex-start, start);
+  height: calc(100vh - 72px);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+  width: 100%;
+  height: fit-content;
+
+  flex: 1;
+  min-width: 0;
+
+  gap: 16px;
+  padding: 16px;
+}
