@@ -78,6 +78,39 @@ class userController{
             }
         }
     }
+
+    async updateMe(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.userId) throw new Error("No user_id");
+            const { name, email, phone, password, confirmPassword } = req.body;
+            if (password !== undefined && password !== confirmPassword) {
+                res.status(400).json({ error: "Пароли не совпадают" });
+                return;
+            }
+            const userInfo = await userService.updateUser(req.userId, { name, email, phone, password });
+            res.status(200).json({ userInfo });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
+    }
+
+    async logout(req: Request, res: Response): Promise<void> {
+        try {
+            const sid = req.cookies?.currSid;
+            if (sid) {
+                await sessionsService.deleteSessionBySessionId(sid);
+            }
+            res.clearCookie("currSid", { httpOnly: true, maxAge: 600_000 });
+            res.status(200).json({ message: "Logged out" });
+        } catch {
+            res.clearCookie("currSid", { httpOnly: true, maxAge: 600_000 });
+            res.status(200).json({ message: "Logged out" });
+        }
+    }
 }
 
 export default new userController();

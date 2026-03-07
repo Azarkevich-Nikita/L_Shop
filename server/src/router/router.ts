@@ -24,6 +24,8 @@ router.get("/users", userController.getAll)
 router.post("/auth/register", userController.register)
 router.post("/auth/login", userController.login)
 router.get("/auth/me", authMiddleware, userController.me)
+router.patch("/auth/me", authMiddleware, userController.updateMe)
+router.post("/auth/logout", authMiddleware, userController.logout)
 
 router.get("/catalog", productsController.getFullCatalogue)
 router.get("/catalog/:id", productsController.getProductById)

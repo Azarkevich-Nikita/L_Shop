@@ -77,6 +77,27 @@ class UserService {
             throw new Error("Login or passwords do not match!");
         }
     }
+
+    async updateUser(userId: number, data: { name?: string; email?: string; phone?: string; password?: string }): Promise<Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'>> {
+        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const index = users.findIndex((u: User) => u.id === userId);
+        if (index === -1) throw new Error("User not found!");
+
+        if (data.email !== undefined) {
+            const existingByEmail = users.find((u: User) => u.email === data.email && u.id !== userId);
+            if (existingByEmail) throw new Error("Email already exists!");
+            users[index].email = data.email;
+        }
+        if (data.name !== undefined) users[index].name = data.name;
+        if (data.phone !== undefined) users[index].phone = data.phone;
+        if (data.password !== undefined && data.password.trim() !== "") {
+            users[index].hashed_password = await HashService.hashPassword(data.password);
+        }
+
+        await jsonStorageService.writeJSON(usersPath, users);
+        const { hashed_password: _, ...rest } = users[index];
+        return rest;
+    }
 /*
     async me() {
 

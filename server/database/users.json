@@ -1,3 +1,10 @@
 [
-  
+  {
+    "id": 1772868654888,
+    "name": "TimofeyCool",
+    "email": "byafisha@gmail.com",
+    "phone": "+375291111111",
+    "hashed_password": "$2b$10$9zz6QZXBoEFFGPsVUp2ZoewSqRnEINh8WOZbXjnHXoua81aFx.rNa",
+    "created_at": "2026-03-07"
+  }
 ]
