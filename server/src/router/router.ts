@@ -1,9 +1,9 @@
 import express from "express";
 // @ts-ignore
-import userController from "../controllers/users/users.controller.ts"
-//@ts-ignore
+import userController from "../controllers/users/users.controller.ts";
+// @ts-ignore
 import basketController from "../controllers/basket/basket.controller.ts";
-//@ts-ignore
+// @ts-ignore
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const router = express.Router();
@@ -18,10 +18,13 @@ router.delete("/basket", basketController.removeItem);
 
 router.post("/basket/delivery", basketController.setDelivery);
 
+router.get("/users", userController.getAll);
+router.post("/auth/register", userController.register);
+router.post("/auth/login", userController.login);
+router.get("/auth/me", authMiddleware, userController.me);
 
-router.get("/users", userController.getAll)
-router.post("/auth/register", userController.register)
-router.post("/auth/login", userController.login)
-router.get("/auth/me", authMiddleware, userController.me)
+router.post("/auth/reset-password", userController.resetPassword);
+router.post("/auth/reset-password-code", userController.resetPasswordCode);
+router.post("/auth/reset-password-new", userController.resetPasswordNew);
 
 export default router;
