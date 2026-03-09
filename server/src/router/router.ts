@@ -3,22 +3,24 @@ import express from "express";
 import userController from "../controllers/users/users.controller.ts";
 // @ts-ignore
 import basketController from "../controllers/basket/basket.controller.ts";
-// @ts-ignore
+//@ts-ignore
+import productsController from "../controllers/products/products.controller.ts";
+//@ts-ignore
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const router = express.Router();
 
-router.get("/basket", basketController.getBasketByUserID);
-router.get("/basket/price", basketController.getTotalPrice);
+router.get("/basket",authMiddleware, basketController.getBasketByUserID);
+router.get("/basket/price",authMiddleware, basketController.getTotalPrice);
 
-router.post("/basket", basketController.addToBasket);
-router.patch("/basket/increase", basketController.increaseQuantity);
-router.patch("/basket/decrease", basketController.decreaseQuantity);
-router.delete("/basket", basketController.removeItem);
-
-router.post("/basket/delivery", basketController.setDelivery);
+router.post("/basket",authMiddleware, basketController.addToBasket);
+router.patch("/basket/increase",authMiddleware, basketController.increaseQuantity);
+router.patch("/basket/decrease",authMiddleware, basketController.decreaseQuantity);
+router.delete("/basket",authMiddleware, basketController.removeItem);
+router.post("/basket/delivery",authMiddleware, basketController.setDelivery);
 
 router.get("/users", userController.getAll);
+
 router.post("/auth/register", userController.register);
 router.post("/auth/login", userController.login);
 router.get("/auth/me", authMiddleware, userController.me);
@@ -26,5 +28,9 @@ router.get("/auth/me", authMiddleware, userController.me);
 router.post("/auth/reset-password", userController.resetPassword);
 router.post("/auth/reset-password-code", userController.resetPasswordCode);
 router.post("/auth/reset-password-new", userController.resetPasswordNew);
+
+router.get("/catalog", productsController.getFullCatalogue)
+router.get("/catalog/:id", productsController.getProductById)
+router.get("/catalog/products/created_from", productsController.getCreatedFrom)
 
 export default router;
