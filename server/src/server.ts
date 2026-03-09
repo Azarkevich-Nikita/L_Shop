@@ -1,4 +1,5 @@
 import express from "express";
+import "dotenv/config";
 import cookieParser from "cookie-parser";
 // @ts-ignore
 import router from "./router/router.ts";
