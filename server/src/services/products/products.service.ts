@@ -3,19 +3,19 @@ import HashService from "../HashService.ts";
 //@ts-ignore
 import jsonStorageService from "../JsonStorageService.ts";
 import path from "path";
-import { fileURLToPath } from "url";
+import {fileURLToPath} from "url";
 //@ts-ignore
-import type { Product } from "../../types/product.types.ts";
+import type {Product} from "../../types/product.types.ts";
 //@ts-ignore
-import type { ProductFilter } from "../../types/ProductFilter.ts";
+import type {ProductFilter} from "../../types/ProductFilter.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const usersPath = path.join(__dirname, "../../../database/products.json");
+const productsPath = path.join(__dirname, "../../../database/products.json");
 
 class ProductService {
     async getProducts(filter: ProductFilter): Promise<Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[]> {
-        let products: Product[] = await jsonStorageService.readJSON(usersPath);
+        let products: Product[] = await jsonStorageService.readJSON(productsPath);
 
         if (filter.created_from) {
             products = products.filter(p =>
@@ -62,9 +62,17 @@ class ProductService {
     }
 
     async getProductById(id: string | string[]): Promise<Product> {
-        const products: Product[] = await jsonStorageService.readJSON(usersPath);
+        const products: Product[] = await jsonStorageService.readJSON(productsPath);
 
         return products.find((prod: Product) => prod.id == id);
+    }
+
+    async getAllCreatedPlace(){
+        const products: Product[] = await jsonStorageService.readJSON(productsPath);
+
+        console.log(new Set<string>(products.map(p => p.created_from)))
+
+        return Array.from(new Set<string>(products.map(p => p.created_from)));
     }
 }
 

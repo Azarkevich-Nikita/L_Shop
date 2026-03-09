@@ -27,5 +27,6 @@ router.get("/auth/me", authMiddleware, userController.me)
 
 router.get("/catalog", productsController.getFullCatalogue)
 router.get("/catalog/:id", productsController.getProductById)
+router.get("/catalog/products/created_from", productsController.getCreatedFrom)
 
 export default router;
