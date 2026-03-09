@@ -23,6 +23,8 @@ router.post("/basket/delivery",authMiddleware, basketController.setDelivery);
 router.get("/users", userController.getAll)
 router.post("/auth/register", userController.register)
 router.post("/auth/login", userController.login)
+router.post("/auth/password-reset/request", userController.requestPasswordReset)
+router.post("/auth/password-reset/confirm", userController.confirmPasswordReset)
 router.get("/auth/me", authMiddleware, userController.me)
 router.patch("/auth/me", authMiddleware, userController.updateMe)
 router.post("/auth/logout", authMiddleware, userController.logout)

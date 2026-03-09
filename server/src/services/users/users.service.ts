@@ -15,11 +15,20 @@ const usersPath = path.join(__dirname, "../../../database/users.json");
 
 class UserService {
     async getAllUsers() {
-        return jsonStorageService.readJSON(usersPath);
+        return (await jsonStorageService.readJSON(usersPath)) ?? [];
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
+        const existingUser: User | undefined = users.find((user: User) => user.email === email);
+        if (!existingUser) {
+            throw new Error("User not found!");
+        }
+        return existingUser;
     }
 
     async getUserById(needId: number): Promise<Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'>> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User) => user.id === needId);
 
@@ -39,7 +48,7 @@ class UserService {
     }
 
     async register(userData: UserDTO): Promise<User> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User) => user.email === userData.email);
 
@@ -62,7 +71,7 @@ class UserService {
     }
 
     async login(userData: UserDTO){
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User)=> user.email === userData.email);
 
@@ -79,23 +88,25 @@ class UserService {
     }
 
     async updateUser(userId: number, data: { name?: string; email?: string; phone?: string; password?: string }): Promise<Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'>> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
         const index = users.findIndex((u: User) => u.id === userId);
         if (index === -1) throw new Error("User not found!");
+        const target = users[index];
+        if (!target) throw new Error("User not found!");
 
         if (data.email !== undefined) {
             const existingByEmail = users.find((u: User) => u.email === data.email && u.id !== userId);
             if (existingByEmail) throw new Error("Email already exists!");
-            users[index].email = data.email;
+            target.email = data.email;
         }
-        if (data.name !== undefined) users[index].name = data.name;
-        if (data.phone !== undefined) users[index].phone = data.phone;
+        if (data.name !== undefined) target.name = data.name;
+        if (data.phone !== undefined) target.phone = data.phone;
         if (data.password !== undefined && data.password.trim() !== "") {
-            users[index].hashed_password = await HashService.hashPassword(data.password);
+            target.hashed_password = await HashService.hashPassword(data.password);
         }
 
         await jsonStorageService.writeJSON(usersPath, users);
-        const { hashed_password: _, ...rest } = users[index];
+        const { hashed_password: _, ...rest } = target;
         return rest;
     }
 /*
