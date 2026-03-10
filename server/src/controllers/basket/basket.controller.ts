@@ -129,6 +129,25 @@ class BasketController {
             }
         }
     }
+
+    async Delivery(req: Request, res: Response) {
+        try {
+            const userId = req.userId;
+            if(!userId) throw Error("User not found");
+
+            await BasketService.Delivery(userId);
+
+            res.status(200).json({ message: "Delivery!" });
+        }
+        catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            }
+            else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
+    }
 }
 
 export default new BasketController();

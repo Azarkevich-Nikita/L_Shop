@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.get("/basket",authMiddleware, basketController.getBasketByUserID);
 router.get("/basket/price",authMiddleware, basketController.getTotalPrice);
+router.get("/basket/delivery", authMiddleware, basketController.Delivery);
 
 router.post("/basket",authMiddleware, basketController.addToBasket);
 router.patch("/basket/increase",authMiddleware, basketController.increaseQuantity);

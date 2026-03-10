@@ -127,6 +127,17 @@ export class BasketService {
 
         return sum;
     }
+
+    async Delivery(userId: number): Promise<void> {
+        const basket:Basket = await this.getBasket(userId);
+        const items: BasketItem[] = basket.items;
+
+        let sum = this.getTotalPrice(userId);
+        const data = this.getBasket(userId);
+
+        JsonStorageService.writeJSON(filePath, data);
+
+    }
 }
 
 export default new BasketService();
