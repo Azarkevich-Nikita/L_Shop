@@ -65,6 +65,20 @@ class productController{
             }
         }
     }
+
+    async getCreatedFrom(req : Request, res : Response){
+        try {
+            console.log(1);
+            return res.status(200).json(await productsService.getAllCreatedPlace());
+        }
+        catch (error: unknown) {
+            if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
+                res.status(400).json({error: error.message});
+            } else {
+                res.status(500).json({error: "Unknown error occurred"});
+            }
+        }
+    }
 }
 
 export default new productController();
