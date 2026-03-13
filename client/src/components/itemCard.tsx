@@ -7,15 +7,16 @@ import iconCart from '../assets/icon-cart-default.svg';
 import iconHeart from '../assets/icon-heart-default.svg';
 
 interface ItemCardProps {
-  key: number;
+  id: number;
   label: string;
   cost: number | string;
   image: string;
+  onClick?: () => void;
 }
 
-const ItemCard: FC<ItemCardProps> = ({ key, label, cost, image }) => {
+const ItemCard: FC<ItemCardProps> = ({ id, label, cost, image, onClick }) => {
   return (
-    <div className="card">
+    <div className="card" onClick = {onClick}>
       <img className="img" src={image} alt={label} />
       <div className="text-container">
         <div className="title">{label}</div>
