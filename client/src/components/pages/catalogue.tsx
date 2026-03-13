@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import Filters from '../filters';
 import ItemCard from '../itemCard'
+import Modal from '../modalCard'
 
 import '../../style/catalogue.scss'
 
@@ -19,35 +20,51 @@ interface CatalogItem {
 }
 
 function Catalogue() {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [catalog, setCatalog] = useState<CatalogItem[]>([]);
+
+    const handleClose = () => {
+        const params = Object.fromEntries(searchParams);
+        delete params['id'];
+        setSearchParams(params);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/catalog?${searchParams.toString()}`);
+                const params = Object.fromEntries(searchParams);
+                delete params['id'];
+
+                const response = await fetch(`/api/catalog?${new URLSearchParams(params).toString()}`);
                 const data = await response.json();
 
                 setCatalog(data);
-                console.log(data);
-
-
-            }
+            } 
             catch (err) {
                 console.log(err);
             }
-        }
-
+        };
         fetchData();
     }, [searchParams]);
+
     return (
         <div className='flex-container'>
             <Filters />
             <div className='cards'>
                 {catalog.map((item) => (
-                    <ItemCard key={item.id} label={item.title} cost={item.price} image={item.image_url[0]}/>
+                    <ItemCard
+                        id={item.id}
+                        label={item.title}
+                        cost={item.price} 
+                        image={item.image_url[0]}
+                        onClick={() => setSearchParams(
+                            { ...Object.fromEntries(searchParams), id: String(item.id) },
+                            { replace: false }
+                        )}  
+                    />
                 ))}
             </div>
+            {searchParams.get('id') && <Modal onClose={handleClose} />}
         </div>
     )
 }
