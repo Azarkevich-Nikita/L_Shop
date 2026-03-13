@@ -6,5 +6,6 @@ export interface Products {
     is_stock: boolean,
     weight: number,
     created_date: string,
-    property: string[]
+    property: string[],
+    image_url: string[]
 }

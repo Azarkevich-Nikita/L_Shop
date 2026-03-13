@@ -15,11 +15,20 @@ const usersPath = path.join(__dirname, "../../../database/users.json");
 
 class UserService {
     async getAllUsers() {
-        return jsonStorageService.readJSON(usersPath);
+        return (await jsonStorageService.readJSON(usersPath)) ?? [];
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
+        const existingUser: User | undefined = users.find((user: User) => user.email === email);
+        if (!existingUser) {
+            throw new Error("User not found!");
+        }
+        return existingUser;
     }
 
     async getUserById(needId: number): Promise<Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'>> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User) => user.id === needId);
 
@@ -39,7 +48,7 @@ class UserService {
     }
 
     async register(userData: UserDTO): Promise<User> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User) => user.email === userData.email);
 
@@ -62,7 +71,7 @@ class UserService {
     }
 
     async login(userData: UserDTO){
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User)=> user.email === userData.email);
 
@@ -77,25 +86,6 @@ class UserService {
             throw new Error("Login or passwords do not match!");
         }
     }
-/*
-    async me() {
-
-        const users = await jsonStorageService.readJSON("users.json");
-        const user = users.find(u => u.id === userId);
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        return res.json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            created_at: user.created_at
-        });
-    }
-    */ //TODOs
 }
 
 export default new UserService();
