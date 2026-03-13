@@ -1,0 +1,24 @@
+[
+  {
+    "user_id": 1,
+    "order_id": 1,
+    "price": 100,
+    "delivery_address": "Minsk",
+    "items": [
+      {
+        "id": 1,
+        "product_id": 1,
+        "weight": 67,
+        "price": 49,
+        "quantity": 13
+      },
+      {
+        "id": 2,
+        "product_id": 3,
+        "weight": 17,
+        "price": 13,
+        "quantity": 1
+      }
+    ]
+  }
+]
