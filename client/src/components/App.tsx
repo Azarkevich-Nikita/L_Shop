@@ -10,6 +10,7 @@ import Auth from './pages/auth';
 import Login from './pages/login';
 import ForgotPassword from './pages/forgotPassword';
 import Agreement from './pages/agreement';
+import Delivery from './pages/delivery';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path='/catalogue' element={<Catalogue />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/delivery' element={<Delivery />} />
         <Route path='/auth' element={<Auth />} />
         <Route path='/login' element={<Login />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />

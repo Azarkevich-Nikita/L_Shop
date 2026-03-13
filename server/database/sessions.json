@@ -43,5 +43,10 @@
     "sessionId": "55e4de2d-cb8d-40c3-ab8f-9615742b72f7",
     "userId": 1772868654888,
     "expiresAt": 1772869503121
+  },
+  {
+    "sessionId": "9041b5f6-b9ea-4d74-893f-1ce2cde173de",
+    "userId": 1772868654888,
+    "expiresAt": 1773431490614
   }
 ]

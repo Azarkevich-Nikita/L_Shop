@@ -60,7 +60,7 @@ function ForgotPassword() {
 
       setConfirmForm((prev) => ({ ...prev, email: requestForm.email }));
       setStep("confirm");
-      setSuccessMessage("Код отправлен на email (в dev-режиме код выводится в консоль сервера).");
+      setSuccessMessage("Код отправлен на email.");
     } catch {
       setServerError("Не удалось подключиться к серверу. Проверьте, что бэкенд запущен на порту 8080.");
     } finally {
