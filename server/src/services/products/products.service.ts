@@ -76,7 +76,7 @@ class ProductService {
     async getProductById(id: string | string[]): Promise<Product> {
         const products: Product[] = await jsonStorageService.readJSON(productsPath);
 
-        return products.find((prod: Product) => prod.id === id);
+        return products.find((prod: Product) => prod.id == id);
     }
 
     async getAllCreatedPlace(){
