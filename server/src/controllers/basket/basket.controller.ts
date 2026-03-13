@@ -42,9 +42,9 @@ class BasketController {
         try {
             const userId = req.userId;
             if(!userId) throw Error("User not found");
-            const { type } = req.body;
+            const { type, postalCode, address } = req.body;
 
-            await BasketService.setDelivery(userId, type);
+            await BasketService.setDelivery(userId, type, postalCode, address);
 
             res.status(200).json({ message: "Delivery updated" });
         }

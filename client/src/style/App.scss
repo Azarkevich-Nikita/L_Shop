@@ -1,6 +1,9 @@
 @use "color";
+@use "utils";
 
 body {
+  font-family: utils.$font;
+
   min-height: 100vh;
   background-color: color.$neutral-4;
   color: color.$neutral-90;

@@ -4,4 +4,7 @@ export interface Basket {
     user_id: number;
     items: BasketItem[];
     deliveryPrice?: number;
+    deliveryType?: "pickup" | "courier";
+    postalCode?: string;
+    address?: string;
 }

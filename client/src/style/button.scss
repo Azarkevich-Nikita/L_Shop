@@ -2,8 +2,13 @@
 @use "utils";
 
 .btn {
+  font-family: utils.$font;
+
   position: relative;
   overflow: hidden;
+
+  font-weight: 500;
+  font-size: 16px;
 
   padding: 0px 16px;
   border-radius: 28px;

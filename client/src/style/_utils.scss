@@ -1,4 +1,6 @@
-@mixin flex($direction, $gap:0, $justify:center, $align:center) {
+$font: url(" https://fonts.googleapis.com/css2?family=Play&display=swap ");
+
+@mixin flex($direction, $gap: 0, $justify: center, $align: center) {
   display: flex;
   flex-direction: $direction;
   justify-content: $justify;
@@ -6,7 +8,7 @@
   gap: $gap;
 }
 
-@mixin containerColors($container, $on-container, $stroke:none) {
+@mixin containerColors($container, $on-container, $stroke: none) {
   background-color: $container;
   color: $on-container;
   border: $stroke;
@@ -16,7 +18,7 @@
 
 @mixin ripple-effect($color: rgba(255, 255, 255, 0.3)) {
   position: relative;
-  overflow: hidden;  
+  overflow: hidden;
 
   & .ripple {
     position: absolute;
@@ -34,4 +36,3 @@
     opacity: 0;
   }
 }
-
