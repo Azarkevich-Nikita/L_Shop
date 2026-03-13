@@ -86,48 +86,6 @@ class UserService {
             throw new Error("Login or passwords do not match!");
         }
     }
-
-    async updateUser(userId: number, data: { name?: string; email?: string; phone?: string; password?: string }): Promise<Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'>> {
-        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
-        const index = users.findIndex((u: User) => u.id === userId);
-        if (index === -1) throw new Error("User not found!");
-        const target = users[index];
-        if (!target) throw new Error("User not found!");
-
-        if (data.email !== undefined) {
-            const existingByEmail = users.find((u: User) => u.email === data.email && u.id !== userId);
-            if (existingByEmail) throw new Error("Email already exists!");
-            target.email = data.email;
-        }
-        if (data.name !== undefined) target.name = data.name;
-        if (data.phone !== undefined) target.phone = data.phone;
-        if (data.password !== undefined && data.password.trim() !== "") {
-            target.hashed_password = await HashService.hashPassword(data.password);
-        }
-
-        await jsonStorageService.writeJSON(usersPath, users);
-        const { hashed_password: _, ...rest } = target;
-        return rest;
-    }
-/*
-    async me() {
-
-        const users = await jsonStorageService.readJSON("users.json");
-        const user = users.find(u => u.id === userId);
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        return res.json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            created_at: user.created_at
-        });
-    }
-    */ //TODOs
 }
 
 export default new UserService();
