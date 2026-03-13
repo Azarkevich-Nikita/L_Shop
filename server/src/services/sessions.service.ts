@@ -53,6 +53,12 @@ class SessionsService {
         await jsonStorageService.writeJSON(sessionsPath, sessions);
     }
 
+    async deleteSessionBySessionId(sessionId: string): Promise<void> {
+        let sessions: Session[] = await JsonStorageService.readJSON(sessionsPath);
+        sessions = sessions.filter(s => s.sessionId !== sessionId);
+        await JsonStorageService.writeJSON(sessionsPath, sessions);
+    }
+
 }
 
 export default new SessionsService();

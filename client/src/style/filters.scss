@@ -1,0 +1,15 @@
+@use "color";
+@use "utils";
+
+.filters-container {
+  background-color: color.$neutral-12;
+  padding: 16px;
+  width: fit-content;
+  height: 100%;
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}

@@ -19,7 +19,10 @@ router.patch("/basket/decrease",authMiddleware, basketController.decreaseQuantit
 router.delete("/basket",authMiddleware, basketController.removeItem);
 router.post("/basket/delivery",authMiddleware, basketController.setDelivery);
 
-router.get("/users", userController.getAll);
+router.get("/users", userController.getAll)
+router.post("/auth/password-reset/request", userController.requestPasswordReset)
+router.post("/auth/password-reset/confirm", userController.confirmPasswordReset)
+router.post("/auth/logout", authMiddleware, userController.logout)
 
 router.post("/auth/register", userController.register);
 router.post("/auth/login", userController.login);

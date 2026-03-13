@@ -17,6 +17,12 @@ class ProductService {
     async getProducts(filter: ProductFilter): Promise<Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[]> {
         let products: Product[] = await jsonStorageService.readJSON(productsPath);
 
+        if (filter.title) {
+            products = products.filter(p =>
+                p.title.toLowerCase().includes(filter.title!.toLowerCase())
+            );
+        }
+
         if (filter.created_from) {
             products = products.filter(p =>
                 p.created_from === filter.created_from
@@ -32,6 +38,12 @@ class ProductService {
         if (filter.max_price !== undefined) {
             products = products.filter(p =>
                 p.price <= filter.max_price!
+            );
+        }
+
+        if (filter.is_stock) {
+            products = products.filter(p =>
+                p.is_stock === filter.is_stock
             );
         }
 

@@ -3,14 +3,13 @@ import Button from './Button';
 import '../style/buttons-pair.scss';
 
 interface ButtonsPairProps {
-  label: string;
   firstImg: string;
   secondImg: string;
   variant?: string;
   size?: string;
 }
 
-function ButtonsPair({ label, firstImg, secondImg, variant = "primary", size = "l" }: ButtonsPairProps) {
+function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l" }: ButtonsPairProps) {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const toggleActive = () => {
@@ -23,7 +22,6 @@ function ButtonsPair({ label, firstImg, secondImg, variant = "primary", size = "
         variant="primary"
         size="l"
       >
-        {label}
         <img src={firstImg} alt="" />
       </Button>
       <Button

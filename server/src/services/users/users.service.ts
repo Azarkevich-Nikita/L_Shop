@@ -15,11 +15,20 @@ const usersPath = path.join(__dirname, "../../../database/users.json");
 
 class UserService {
     async getAllUsers() {
-        return jsonStorageService.readJSON(usersPath);
+        return (await jsonStorageService.readJSON(usersPath)) ?? [];
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
+        const existingUser: User | undefined = users.find((user: User) => user.email === email);
+        if (!existingUser) {
+            throw new Error("User not found!");
+        }
+        return existingUser;
     }
 
     async getUserById(needId: number): Promise<Pick<User, 'id' | 'name' | 'email' | 'phone' | 'created_at'>> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User) => user.id === needId);
 
@@ -39,7 +48,7 @@ class UserService {
     }
 
     async register(userData: UserDTO): Promise<User> {
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User) => user.email === userData.email);
 
@@ -62,7 +71,7 @@ class UserService {
     }
 
     async login(userData: UserDTO){
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+        const users: User[] = (await jsonStorageService.readJSON(usersPath)) ?? [];
 
         const existingUser: User | undefined = users.find((user: User)=> user.email === userData.email);
 

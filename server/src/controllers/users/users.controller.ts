@@ -5,6 +5,10 @@ import userService from "../../services/users/users.service.ts";
 import sessionService from "../../services/sessions.service.ts";
 // @ts-ignore
 import sessionsService from "../../services/sessions.service.ts";
+//@ts-ignore
+import passwordResetService from "../../services/passwordReset.service.ts";
+//@ts-ignore
+import emailService from "../../services/email.service.ts";
 // @ts-ignore
 import UsersService from "../../services/users/users.service.ts";
 // @ts-ignore
@@ -143,6 +147,105 @@ class userController {
             } else {
                 res.status(500).json({ error: "Unknown error occurred" });
             }
+        }
+    }
+
+    async updateMe(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.userId) throw new Error("No user_id");
+            const { name, email, phone, password, confirmPassword } = req.body;
+            if (password !== undefined && password !== confirmPassword) {
+                res.status(400).json({ error: "Пароли не совпадают" });
+                return;
+            }
+            const userInfo = await userService.updateUser(req.userId, { name, email, phone, password });
+            res.status(200).json({ userInfo });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
+    }
+
+    async requestPasswordReset(req: Request, res: Response): Promise<void> {
+        try {
+            const { email } = req.body;
+            if (!email || typeof email !== "string") {
+                res.status(400).json({ error: "Введите email" });
+                return;
+            }
+
+            try {
+                await userService.getUserByEmail(email);
+                const code = await passwordResetService.create(email);
+                await emailService.sendPasswordResetEmail(email, code);
+            } catch {
+                // do not reveal whether user exists
+            }
+
+            res.status(200).json({ message: "Если email существует, код будет отправлен" });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
+    }
+
+    async confirmPasswordReset(req: Request, res: Response): Promise<void> {
+        try {
+            const { email, code, password, confirmPassword } = req.body;
+            if (!email || typeof email !== "string") {
+                res.status(400).json({ error: "Введите email" });
+                return;
+            }
+            if (!code || typeof code !== "string") {
+                res.status(400).json({ error: "Введите код" });
+                return;
+            }
+            if (!password || typeof password !== "string" || password.length < 6) {
+                res.status(400).json({ error: "Пароль должен быть не менее 6 символов" });
+                return;
+            }
+            if (password !== confirmPassword) {
+                res.status(400).json({ error: "Пароли не совпадают" });
+                return;
+            }
+
+            const isValid = await passwordResetService.verify(email, code);
+            if (!isValid) {
+                res.status(400).json({ error: "Неверный или просроченный код" });
+                return;
+            }
+
+            const user = await userService.getUserByEmail(email);
+            await userService.updateUser(user.id, { password });
+            await passwordResetService.consume(email);
+
+            res.status(200).json({ message: "Пароль обновлён" });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
+    }
+
+    async logout(req: Request, res: Response): Promise<void> {
+        try {
+            const sid = req.cookies?.currSid;
+            if (sid) {
+                await sessionsService.deleteSessionBySessionId(sid);
+            }
+            res.clearCookie("currSid", { httpOnly: true, maxAge: 600_000 });
+            res.status(200).json({ message: "Logged out" });
+        } catch {
+            res.clearCookie("currSid", { httpOnly: true, maxAge: 600_000 });
+            res.status(200).json({ message: "Logged out" });
         }
     }
 }
