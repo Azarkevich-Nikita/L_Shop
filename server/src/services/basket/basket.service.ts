@@ -12,27 +12,31 @@ const filePath = path.join(__dirname, "../../../database/basket.json");
 const newFilePath = path.join(__dirname, "../../../database/delivery.json");
 export class BasketService {
 
-    private async getData() {
-        return await JsonStorageService.readJSON(filePath);
+    private async getData(): Promise<Basket[]> {
+        const data = await JsonStorageService.readJSON<Basket[]>(filePath);
+        if (!Array.isArray(data)) {
+            return [];
+        }
+        return data;
     }
 
-    private async saveData(data:Basket) {
+    private async saveData(data: Basket[]): Promise<void> {
         await JsonStorageService.writeJSON(filePath, data);
     }
 
-    async clearBasket(userId:number) {
+    async clearBasket(userId:number): Promise<void> {
         const data = await this.getData();
-        const newData = data.filter((basket: any) => basket.user_id !== userId);
+        const newData = data.filter((basket: Basket) => basket.user_id !== userId);
         await this.saveData(newData);
     }
 
-    async getBasket(userId: number) {
-        const data = await JsonStorageService.readJSON(filePath);
+    async getBasket(userId: number): Promise<Basket | null> {
+        const data = await this.getData();
         return data.find((b: Basket) => b.user_id === userId) || null;
     }
 
-    private getOrCreateBasket(data: any[], userId: number) {
-        let basket = data.find((b: any) => b.user_id === userId);
+    private getOrCreateBasket(data: Basket[], userId: number): Basket {
+        let basket = data.find((b: Basket) => b.user_id === userId);
 
         if (!basket) {
             basket = {
@@ -45,11 +49,11 @@ export class BasketService {
         return basket;
     }
 
-    async addToBasket(userId: number, item: BasketItem) {
+    async addToBasket(userId: number, item: BasketItem): Promise<void> {
         const data = await this.getData();
         const basket = this.getOrCreateBasket(data, userId);
         const existingItem = basket.items.find(
-            (i: any) => i.product_id === item.product_id
+            (i: BasketItem) => i.product_id === item.product_id
         );
 
         if (existingItem) {
@@ -61,10 +65,10 @@ export class BasketService {
         await this.saveData(data);
     }
 
-    async increaseQuantity(userId: number, productId: number) {
-        const basket:Basket[] = await JsonStorageService.readJSON(filePath);
+    async increaseQuantity(userId: number, productId: number): Promise<void> {
+        const baskets: Basket[] = await this.getData();
 
-        basket.forEach((b: Basket) => {
+        baskets.forEach((b: Basket) => {
             if(userId == b.user_id) {
                 b.items.map((i:BasketItem) => {
                     if(i.product_id === productId) {
@@ -72,14 +76,14 @@ export class BasketService {
                     }
                 });
             }
-        })
-        await JsonStorageService.writeJSON(filePath, basket);
+        });
+        await this.saveData(baskets);
     }
 
-    async decreaseQuantity(userId: number, productId: number) {
-        const basket:Basket[] = await JsonStorageService.readJSON(filePath);
+    async decreaseQuantity(userId: number, productId: number): Promise<void> {
+        const baskets: Basket[] = await this.getData();
 
-        basket.forEach((b: Basket) => {
+        baskets.forEach((b: Basket) => {
             if(userId == b.user_id) {
                 b.items.map((i:BasketItem) => {
                     if(i.product_id === productId) {
@@ -87,27 +91,27 @@ export class BasketService {
                     }
                 });
             }
-        })
-        await JsonStorageService.writeJSON(filePath, basket);
+        });
+        await this.saveData(baskets);
     }
 
-    async removeItem(userId: number, productId: number) {
+    async removeItem(userId: number, productId: number): Promise<void> {
         const data = await this.getData();
         const basket = this.getOrCreateBasket(data, userId);
 
         basket.items = basket.items.filter(
-            (i: any) => i.product_id !== productId
+            (i: BasketItem) => i.product_id !== productId
         );
 
         await this.saveData(data);
     }
 
-    async setDelivery(userId: number, type: "pickup" | "courier") {
+    async setDelivery(userId: number, type: "pickup" | "courier"): Promise<void> {
         const data = await this.getData();
         const basket = this.getOrCreateBasket(data, userId);
 
         const itemsTotal = basket.items.reduce(
-            (sum: number, item: any) =>
+            (sum: number, item: BasketItem) =>
                 sum + item.price * item.quantity,
             0
         );
@@ -124,7 +128,10 @@ export class BasketService {
     }
 
     async getTotalPrice(userId: number): Promise<number> {
-        const basket:Basket = await this.getBasket(userId);
+        const basket = await this.getBasket(userId);
+        if (!basket) {
+            return 0;
+        }
         const items: BasketItem[] = basket.items;
 
         let sum = 0;
@@ -141,7 +148,7 @@ export class BasketService {
             email,
             changeFrom,
         }: { address: string; phone: string; email: string; changeFrom: number | null }
-    ) {
+    ): Promise<void> {
         const basket = await this.getBasket(userId);
 
         if (!basket || !basket.items || basket.items.length === 0) {
@@ -153,7 +160,7 @@ export class BasketService {
             0
         );
 
-        const deliveryPrice = (basket as any).deliveryPrice ?? 0;
+        const deliveryPrice = basket.deliveryPrice ?? 0;
         const totalPrice = itemsTotal + deliveryPrice;
 
         let orders: Order[] | undefined = await JsonStorageService.readJSON(newFilePath);
