@@ -9,15 +9,21 @@ import {fileURLToPath} from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const filePath = path.join(__dirname, "../../../database/basket.json");
-
+const newFilePath = path.join(__dirname, "../../../database/delivery.json");
 export class BasketService {
 
     private async getData() {
         return await JsonStorageService.readJSON(filePath);
     }
 
-    private async saveData(data: any) {
+    private async saveData(data:Basket) {
         await JsonStorageService.writeJSON(filePath, data);
+    }
+
+    async clearBasket(userId:number) {
+        const data = await this.getData();
+        const newData = data.filter((basket: any) => basket.user_id !== userId);
+        await this.saveData(newData);
     }
 
     async getBasket(userId: number) {
@@ -25,16 +31,15 @@ export class BasketService {
         return data.find((b: Basket) => b.user_id === userId) || null;
     }
 
-    private getOrCreateBasket(data: any, userId: number) {
-        let basket = data.basket.find((b: any) => b.user_id === userId);
+    private getOrCreateBasket(data: any[], userId: number) {
+        let basket = data.find((b: any) => b.user_id === userId);
 
         if (!basket) {
             basket = {
                 user_id: userId,
                 items: [],
-                deliveryPrice: 0
             };
-            data.basket.push(basket);
+            data.push(basket);
         }
 
         return basket;
@@ -128,15 +133,12 @@ export class BasketService {
         return sum;
     }
 
-    async Delivery(userId: number): Promise<void> {
+    async Buy(userId: number) {
+        const data = await this.getData();
         const basket:Basket = await this.getBasket(userId);
-        const items: BasketItem[] = basket.items;
-
-        let sum = this.getTotalPrice(userId);
-        const data = this.getBasket(userId);
-
-        JsonStorageService.writeJSON(filePath, data);
-
+        const newData = data.find((b: Basket) => b.user_id === userId) || null;
+        await JsonStorageService.writeJSON(newFilePath, newData);
+        await this.clearBasket(userId);
     }
 }
 

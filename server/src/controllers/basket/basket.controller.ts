@@ -1,6 +1,8 @@
 import {request, type Request, type Response} from "express";
 // @ts-ignore
 import BasketService from "../../services/basket/basket.service.ts";
+//@ts-ignore
+import basketService from "../../services/basket/basket.service.ts";
 
 class BasketController {
 
@@ -130,20 +132,17 @@ class BasketController {
         }
     }
 
-    async Delivery(req: Request, res: Response) {
+    async Buy(req: Request, res: Response) {
         try {
             const userId = req.userId;
             if(!userId) throw Error("User not found");
-
-            await BasketService.Delivery(userId);
-
-            res.status(200).json({ message: "Delivery!" });
+            await basketService.Buy(userId);
+            res.status(200).json({ message: "Item buyed" });
         }
         catch (error: unknown) {
             if (error instanceof Error) {
                 res.status(400).json({ error: error.message });
-            }
-            else {
+            } else {
                 res.status(500).json({ error: "Unknown error occurred" });
             }
         }
