@@ -1,9 +1,9 @@
-import fs from "fs";
 import path from "path";
 //@ts-ignore
 import JsonStorageService from "../JsonStorageService.ts";
 import type { BasketItem } from "../../types/basketItem.types.ts";
 import type { Basket } from "../../types/basket.types.ts";
+import type { Order } from "../../types/orders.types.ts";
 import {fileURLToPath} from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -133,11 +133,48 @@ export class BasketService {
         return sum;
     }
 
-    async Buy(userId: number) {
-        const data = await this.getData();
-        const basket:Basket = await this.getBasket(userId);
-        const newData = data.find((b: Basket) => b.user_id === userId) || null;
-        await JsonStorageService.writeJSON(newFilePath, newData);
+    async Buy(
+        userId: number,
+        {
+            address,
+            phone,
+            email,
+            changeFrom,
+        }: { address: string; phone: string; email: string; changeFrom: number | null }
+    ) {
+        const basket = await this.getBasket(userId);
+
+        if (!basket || !basket.items || basket.items.length === 0) {
+            throw new Error("Basket is empty");
+        }
+
+        const itemsTotal = basket.items.reduce(
+            (sum: number, item: BasketItem) => sum + item.price * item.quantity,
+            0
+        );
+
+        const deliveryPrice = (basket as any).deliveryPrice ?? 0;
+        const totalPrice = itemsTotal + deliveryPrice;
+
+        let orders: Order[] | undefined = await JsonStorageService.readJSON(newFilePath);
+        if (!Array.isArray(orders)) {
+            orders = [];
+        }
+
+        const newOrder: Order = {
+            user_id: userId,
+            order_id: Date.now(),
+            price: totalPrice,
+            delivery_address: address,
+            phone,
+            email,
+            change_from: changeFrom,
+            items: basket.items,
+        };
+
+        orders.push(newOrder);
+
+        await JsonStorageService.writeJSON(newFilePath, orders);
         await this.clearBasket(userId);
     }
 }

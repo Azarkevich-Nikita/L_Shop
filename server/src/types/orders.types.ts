@@ -5,5 +5,8 @@ export interface Order {
     order_id: number;
     price: number;
     delivery_address: string;
-    items : BasketItem[];
+    phone: string;
+    email: string;
+    change_from: number | null;
+    items: BasketItem[];
 }

@@ -136,8 +136,20 @@ class BasketController {
         try {
             const userId = req.userId;
             if(!userId) throw Error("User not found");
-            await basketService.Buy(userId);
-            res.status(200).json({ message: "Item buyed" });
+            const { address, phone, email, changeFrom } = req.body;
+
+            if (!address || !phone || !email) {
+                throw new Error("Address, phone and email are required");
+            }
+
+            await basketService.Buy(userId, {
+                address,
+                phone,
+                email,
+                changeFrom: typeof changeFrom === "number" ? changeFrom : null,
+            });
+
+            res.status(200).json({ message: "Order created" });
         }
         catch (error: unknown) {
             if (error instanceof Error) {
