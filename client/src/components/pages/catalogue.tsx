@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-
 import Filters from '../filters';
 import ItemCard from '../itemCard'
 import Modal from '../modalCard'
-
 import '../../style/catalogue.scss'
 
 interface CatalogItem {
@@ -22,6 +20,11 @@ interface CatalogItem {
 function Catalogue() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [catalog, setCatalog] = useState<CatalogItem[]>([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
 
     const handleClose = () => {
         const params = Object.fromEntries(searchParams);
@@ -29,23 +32,53 @@ function Catalogue() {
         setSearchParams(params);
     };
 
+    // При смене фильтров — сбрасываем список и страницу
+    useEffect(() => {
+        setCatalog([]);
+        setPage(1);
+        setHasMore(true);
+    }, [searchParams]);
+
+    // Загрузка данных при изменении page
     useEffect(() => {
         const fetchData = async () => {
+            if (!hasMore || loading) return;
+            setLoading(true);
             try {
                 const params = Object.fromEntries(searchParams);
                 delete params['id'];
+                params['page'] = String(page);
 
                 const response = await fetch(`/api/catalog?${new URLSearchParams(params).toString()}`);
                 const data = await response.json();
 
-                setCatalog(data);
+                if (data.length === 0) {
+                    setHasMore(false);
+                } else {
+                    setCatalog(prev => page === 1 ? data : [...prev, ...data]);
+                }
             } 
             catch (err) {
                 console.log(err);
+            } 
+            finally {
+                setLoading(false);
             }
         };
         fetchData();
-    }, [searchParams]);
+    }, [page, searchParams]);
+
+    const sentinelCallback = useCallback((node: HTMLDivElement | null) => {
+        if (observerRef.current) observerRef.current.disconnect();
+        if (!node) return;
+
+        observerRef.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore && !loading) {
+                setPage(prev => prev + 1);
+            }
+        });
+        observerRef.current.observe(node);
+    }, [hasMore, loading]);
 
     return (
         <div className='flex-container'>
@@ -53,16 +86,19 @@ function Catalogue() {
             <div className='cards'>
                 {catalog.map((item) => (
                     <ItemCard
+                        key={item.id}
                         id={item.id}
                         label={item.title}
-                        cost={item.price} 
+                        cost={item.price}
                         image={item.image_url[0]}
                         onClick={() => setSearchParams(
                             { ...Object.fromEntries(searchParams), id: String(item.id) },
                             { replace: false }
-                        )}  
+                        )}
                     />
                 ))}
+                {loading && <div>Загрузка...</div>}
+                <div ref={sentinelCallback} />
             </div>
             {searchParams.get('id') && <Modal onClose={handleClose} />}
         </div>

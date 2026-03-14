@@ -12,9 +12,41 @@
 }
 
 .modal {
-  background-color: color.$neutral-12;
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 600px;
-  width: 100%;
+  @include utils.flex(column, 8px, left, center);
+
+  background-color: color.$neutral-10;
+  border-radius: 44px;
+  padding: 16px;
+  max-width: fit-content;
+
+  img {
+    border-radius: 28px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  .text {
+    @include utils.flex(column, 8px);
+    background-color: color.$neutral-17;
+    width: 100%;
+    padding: 12px;
+    border-radius: 28px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .row {
+    @include utils.flex(row, 8px, space-between, center);
+    width: 100%;
+  }
+
+  .hr {
+    height: 2px;
+    width: 100%;
+    background-color: color.$neutral-var-60;
+  }
+
+  .column {
+    @include utils.flex(column, 4px, right, flex-start);
+  }
 }
