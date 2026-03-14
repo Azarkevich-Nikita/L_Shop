@@ -6,6 +6,8 @@ import basketController from "../controllers/basket/basket.controller.ts";
 //@ts-ignore
 import productsController from "../controllers/products/products.controller.ts";
 //@ts-ignore
+import bannersController from "../controllers/banners/banners.controller.ts";
+//@ts-ignore
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const router = express.Router();
@@ -37,5 +39,6 @@ router.post("/auth/reset-password-new", userController.resetPasswordNew);
 router.get("/catalog", productsController.getFullCatalogue)
 router.get("/catalog/:id", productsController.getProductById)
 router.get("/catalog/products/created_from", productsController.getCreatedFrom)
+router.get("/banners", bannersController.getBanners);
 
 export default router;

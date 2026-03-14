@@ -29,6 +29,28 @@ function Catalogue() {
         setSearchParams(params);
     };
 
+    const handleAddToCart = (item: CatalogItem) => async () => {
+        try {
+            const res = await fetch('/api/basket', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    product_id: item.id,
+                    price: item.price,
+                    weight: item.weight ?? 0,
+                    quantity: 1,
+                }),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                alert(data?.error ?? 'Не удалось добавить в корзину');
+            }
+        } catch {
+            alert('Не удалось добавить в корзину');
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -53,14 +75,17 @@ function Catalogue() {
             <div className='cards'>
                 {catalog.map((item) => (
                     <ItemCard
+                        key={item.id}
                         id={item.id}
                         label={item.title}
                         cost={item.price} 
-                        image={item.image_url[0]}
+                        image={item.image_url?.[0] ?? ''}
+                        weight={item.weight}
                         onClick={() => setSearchParams(
                             { ...Object.fromEntries(searchParams), id: String(item.id) },
                             { replace: false }
-                        )}  
+                        )}
+                        onAddToCart={handleAddToCart(item)}
                     />
                 ))}
             </div>

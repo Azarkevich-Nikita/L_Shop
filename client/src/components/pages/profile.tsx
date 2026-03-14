@@ -86,7 +86,7 @@ function Profile() {
       try {
         const response = await fetch('/api/auth/me', { credentials: 'include' });
         if (response.status === 401) {
-          if (!cancelled) navigate('/login');
+          if (!cancelled) navigate('/auth');
           return;
         }
         if (!response.ok) {

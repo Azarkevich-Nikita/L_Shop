@@ -11,12 +11,19 @@ interface ItemCardProps {
   label: string;
   cost: number | string;
   image: string;
+  weight?: number;
   onClick?: () => void;
+  onAddToCart?: (e: React.MouseEvent) => void;
 }
 
-const ItemCard: FC<ItemCardProps> = ({ id, label, cost, image, onClick }) => {
+const ItemCard: FC<ItemCardProps> = ({ id, label, cost, image, weight = 0, onClick, onAddToCart }) => {
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToCart?.(e);
+  };
+
   return (
-    <div className="card" onClick = {onClick}>
+    <div className="card" onClick={onClick}>
       <img className="img" src={image} alt={label} />
       <div className="text-container">
         <div className="title">{label}</div>
@@ -25,6 +32,7 @@ const ItemCard: FC<ItemCardProps> = ({ id, label, cost, image, onClick }) => {
       <ButtonsPair
         firstImg={iconCart}
         secondImg={iconHeart}
+        onFirstClick={handleCartClick}
       />
     </div>
   );
