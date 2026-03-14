@@ -16,10 +16,6 @@ import type { User } from "../models/users.model.ts";
 // @ts-ignore
 import type { Session } from "../../types/session.types.ts";
 // @ts-ignore
-import passwordResetService from "../../services/passwordReset.service.ts";
-// @ts-ignore
-import emailService from "../../services/email.service.ts";
-// @ts-ignore
 import { generateCode } from "../../utils/code.ts";
 
 class userController {

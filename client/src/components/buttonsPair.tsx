@@ -7,9 +7,10 @@ interface ButtonsPairProps {
   secondImg: string;
   variant?: string;
   size?: string;
+  onFirstClick?: (e: React.MouseEvent) => void;
 }
 
-function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l" }: ButtonsPairProps) {
+function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l", onFirstClick }: ButtonsPairProps) {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const toggleActive = () => {
@@ -21,6 +22,8 @@ function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l" }: B
       <Button
         variant="primary"
         size="l"
+        onClick={onFirstClick}
+        type="button"
       >
         <img src={firstImg} alt="" />
       </Button>

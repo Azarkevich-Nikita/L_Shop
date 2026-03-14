@@ -61,6 +61,7 @@ function Delivery() {
     }
 
     setSubmitting(true);
+
     try {
       const response = await fetch("/api/basket/delivery", {
         method: "POST",
@@ -72,6 +73,11 @@ function Delivery() {
           address: formData.address.trim(),
         }),
       });
+
+      if (response.status === 401) {
+        navigate("/auth");
+        return;
+      }
 
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -156,7 +162,7 @@ function Delivery() {
             className="auth-submit-button"
             disabled={submitting}
           >
-            {submitting ? "Отправка..." : "Заказать"}
+            {submitting ? "Отправка..." : "Сохранить адрес"}
           </Button>
         </form>
       </main>
