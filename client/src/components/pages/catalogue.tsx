@@ -113,8 +113,6 @@ function Catalogue() {
                         label={item.title}
                         cost={item.price}
                         image={item.image_url[0]}
-                        cost={item.price} 
-                        image={item.image_url?.[0] ?? ''}
                         weight={item.weight}
                         onClick={() => setSearchParams(
                             { ...Object.fromEntries(searchParams), id: String(item.id) },

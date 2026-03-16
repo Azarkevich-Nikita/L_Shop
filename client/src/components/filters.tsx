@@ -25,6 +25,14 @@ function Filters() {
         setSearchParams(params);
     };
 
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const params = Object.fromEntries(searchParams);
+        if (e.target.value === '') 
+            delete params[e.target.name];
+        else params[e.target.name] = e.target.value;
+        setSearchParams(params);
+    };
+
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const params = Object.fromEntries(searchParams);
         if (!e.target.checked) {
