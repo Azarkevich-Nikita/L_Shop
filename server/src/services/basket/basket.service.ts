@@ -3,11 +3,13 @@ import path from "path";
 import JsonStorageService from "../JsonStorageService.ts";
 import type { BasketItem } from "../../types/basketItem.types.ts";
 import type { Basket } from "../../types/basket.types.ts";
+import type { Order } from "../../types/orders.types.ts";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const filePath = path.join(__dirname, "../../../database/basket.json");
+const newFilePath = path.join(__dirname, "../../../database/orders.json");
 
 type DeliveryType = "pickup" | "courier";
 
@@ -26,12 +28,12 @@ export class BasketService {
     }
 
     async getBasket(userId: number) {
-        const data = await JsonStorageService.readJSON(filePath);
-        return (data.basket as Basket[]).find((b: Basket) => b.user_id === userId) || null;
+        const data = await this.getData();
+        return data.find((b: Basket) => b.user_id === userId) || null;
     }
 
-    private getOrCreateBasket(data: any, userId: number): Basket {
-        let basket: Basket | undefined = (data.basket as Basket[]).find(
+    private getOrCreateBasket(data: Basket[], userId: number): Basket {
+        let basket: Basket | undefined = data.find(
             (b: Basket) => b.user_id === userId
         );
 
@@ -113,12 +115,22 @@ export class BasketService {
         if (type === "pickup") {
             basket.deliveryPrice = 0;
             basket.deliveryType = "pickup";
-            basket.postalCode = undefined;
-            basket.address = undefined;
+            delete basket.postalCode;
+            delete basket.address;
         } else {
             basket.deliveryType = "courier";
-            basket.postalCode = postalCode;
-            basket.address = address;
+
+            if (postalCode !== undefined) {
+                basket.postalCode = postalCode;
+            } else {
+                delete basket.postalCode;
+            }
+
+            if (address !== undefined) {
+                basket.address = address;
+            } else {
+                delete basket.address;
+            }
 
             if (itemsTotal > 3000) basket.deliveryPrice = 200;
             else if (itemsTotal > 1000) basket.deliveryPrice = 100;
@@ -144,6 +156,19 @@ export class BasketService {
         }
 
         return sum;
+    }
+
+    private async clearBasket(userId: number): Promise<void> {
+        const data = await this.getData();
+        const basket = data.find((b: Basket) => b.user_id === userId);
+        if (basket) {
+            basket.items = [];
+            basket.deliveryPrice = 0;
+            delete basket.deliveryType;
+            delete basket.postalCode;
+            delete basket.address;
+        }
+        await this.saveData(data);
     }
 
     async Buy(

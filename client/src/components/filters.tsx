@@ -8,37 +8,34 @@ function Filters() {
     const [manufacturers, setManufacturers] = useState<string[]>([]);
 
     useEffect(() => {
-        const fetchManufacturers = async () => {
-            const response = await fetch('/api/catalog/products/created_from');
-            const data = await response.json();
-            setManufacturers(data);
-        };
-        fetchManufacturers();
+        fetch('/api/catalog/products/created_from', { credentials: 'include' })
+            .then((res) => res.json())
+            .then((data: string[]) => setManufacturers(data || []))
+            .catch(() => {});
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const params = Object.fromEntries(searchParams);
-        if (e.target.value === '') 
-            delete params[e.target.name];
-        else params[e.target.name] = e.target.value;
-        setSearchParams(params);
-    };
-
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const params = Object.fromEntries(searchParams);
-        if (e.target.value === '') 
-            delete params[e.target.name];
-        else params[e.target.name] = e.target.value;
+        const name = e.target.name;
+        if (e.target.value === '') {
+            delete params[name];
+        } else {
+            params[name] = e.target.value;
+        }
         setSearchParams(params);
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const params = Object.fromEntries(searchParams);
-        if (!e.target.checked) 
+        if (!e.target.checked) {
             delete params[e.target.name];
-        else params[e.target.name] = 'true';
+        } else {
+            params[e.target.name] = 'true';
+        }
         setSearchParams(params);
-    }
+    };
+
+    const getParam = (name: string) => searchParams.get(name) ?? '';
 
     return (
         <div className='filters-container'>
@@ -71,7 +68,7 @@ function Filters() {
                 <Input name="created-to" placeholder="До" onChange={handleChange} />
             </div>
 
-            <span>Вес на складе</span>
+            <span>Сортировка</span>
             <div className='filter-row'>
                 <Input name="weight-from" placeholder="От" onChange={handleChange} />
                 <Input name="weight-to" placeholder="До" onChange={handleChange} />

@@ -138,8 +138,8 @@ class BasketController {
             if(!userId) throw Error("User not found");
             const { address, phone, email, changeFrom } = req.body;
 
-            if (!address || !phone || !email) {
-                throw new Error("Address, phone and email are required");
+            if (!address) {
+                throw new Error("Address is required");
             }
 
             await basketService.Buy(userId, {
