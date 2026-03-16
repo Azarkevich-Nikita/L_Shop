@@ -4,13 +4,9 @@ import userService from "../../services/users/users.service.ts";
 // @ts-ignore
 import sessionService from "../../services/sessions.service.ts";
 // @ts-ignore
-import sessionsService from "../../services/sessions.service.ts";
-//@ts-ignore
 import passwordResetService from "../../services/passwordReset.service.ts";
 //@ts-ignore
 import emailService from "../../services/email.service.ts";
-// @ts-ignore
-import UsersService from "../../services/users/users.service.ts";
 // @ts-ignore
 import type { User } from "../models/users.model.ts";
 // @ts-ignore

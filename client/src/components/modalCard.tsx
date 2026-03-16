@@ -12,6 +12,7 @@ interface modalProps {
     is_stock: boolean;
     created_date: string
     property: Array<string>;
+    image_url: Array<string>;
 }
 
 function Modal({ onClose }: { onClose: () => void }) {
@@ -34,11 +35,31 @@ function Modal({ onClose }: { onClose: () => void }) {
     return createPortal(
         <div className='modal-overlay' onClick={onClose}>
             <div className='modal' onClick={e => e.stopPropagation()}>
-                <div>{modalInfo?.title}</div>
-                <div>{modalInfo?.price} руб.</div>
-                <div>{modalInfo?.created_from}</div>
-                <div>{modalInfo?.is_stock ? 'В наличии' : 'Нет в наличии'}</div>
-                <div>{modalInfo?.created_date}</div>
+                <img src={modalInfo?.image_url?.[0]} />
+                <div className='text'>
+                    <div className='row'>
+                        <div>{modalInfo?.title}</div>
+                        <div>{modalInfo?.price} руб.</div>
+                    </div>
+                    <div className='row'>
+                        <div>Страна-производитель</div>
+                        <div>{modalInfo?.created_from}</div>
+                    </div>
+                    <div className='row'>
+                        <div>В наличии</div>
+                        <div>{modalInfo?.is_stock ? 'Да' : 'Нет'}</div>
+                    </div>
+                    <div className='row'>
+                        <div>Дата производства</div>
+                        <div>{modalInfo?.created_date}</div>
+                    </div>
+                    <div className='hr' />
+                    <div className='row'>
+                        <div className='column'>{modalInfo?.property.map(prop => (
+                            <div>{prop}</div>
+                        ))}</div>
+                    </div>
+                </div>
             </div>
         </div>,
         document.body
