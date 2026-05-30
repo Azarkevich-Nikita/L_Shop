@@ -18,48 +18,48 @@ class userController{
     }
 
     async register(req: Request, res: Response): Promise<void> {
-        try {
-            const newUser: User = await userService.register(req.body);
+         try {
+             const newUser: User = await userService.register(req.body);
 
-            const session:Session = await sessionService.createSession(newUser.id);
+             const session:Session = await sessionService.createSession(newUser.id);
 
-            res.cookie("currSid", session.sessionId, {
-                httpOnly: true,
-                maxAge: 600_000
-            });
+             res.cookie("currSid", session.sessionId, {
+                 httpOnly: true,
+                 maxAge: 600_000
+             });
 
-            res.status(201).json({ message: "User registered successfully", user: newUser });
-        }
-        catch (error: unknown) {
-            if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
-                res.status(400).json({ error: error.message });
-            } else {
-                res.status(500).json({ error: "Unknown error occurred" });
-            }
-        }
-    }
+             res.status(201).json({ message: "User registered successfully", user: newUser, token: session.sessionId });
+         }
+         catch (error: unknown) {
+             if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
+                 res.status(400).json({ error: error.message });
+             } else {
+                 res.status(500).json({ error: "Unknown error occurred" });
+             }
+         }
+     }
 
     async login(req: Request, res : Response): Promise<void> {
-        try{
-            const user: User = await UsersService.login(req.body);
+         try{
+             const user: User = await UsersService.login(req.body);
 
-            const session: Session = await sessionsService.createSession(user.id);
+             const session: Session = await sessionsService.createSession(user.id);
 
-            res.cookie("currSid", session.sessionId, {
-                httpOnly: true,
-                maxAge: 600_000
-            });
+             res.cookie("currSid", session.sessionId, {
+                 httpOnly: true,
+                 maxAge: 600_000
+             });
 
-            res.status(201).json({ message: "User login successfully" });
-        }
-        catch (error: unknown) {
-            if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
-                res.status(400).json({error: error.message});
-            } else {
-                res.status(500).json({error: "Unknown error occurred"});
-            }
-        }
-    }
+             res.status(200).json({ message: "User login successfully", token: session.sessionId });
+         }
+         catch (error: unknown) {
+             if (error instanceof Error) { //Проверим, что бы в объекте ошибки, у нас есть сообщение
+                 res.status(400).json({error: error.message});
+             } else {
+                 res.status(500).json({error: "Unknown error occurred"});
+             }
+         }
+     }
 
     async me(req: Request, res : Response) {
         try {

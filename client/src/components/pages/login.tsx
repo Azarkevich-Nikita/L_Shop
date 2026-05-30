@@ -72,17 +72,18 @@ function Login() {
       return;
     }
 
-    setLoading(true);
-    try {
-      // Отправляем в поле email — бэкенд сам разберёт тип
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.identifier,
-          password: formData.password,
-        }),
-      });
+     setLoading(true);
+     try {
+       // Отправляем в поле email — бэкенд сам разберёт тип
+       const response = await fetch("/api/auth/login", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         credentials: "include",
+         body: JSON.stringify({
+           email: formData.identifier,
+           password: formData.password,
+         }),
+       });
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));

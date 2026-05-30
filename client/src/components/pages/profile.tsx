@@ -6,21 +6,23 @@ function Profile() {
     useEffect(() => {
         let cancelled = false;
 
-        const fetchData = async () => {
-            try {
-                if (!cancelled) {
-                    const response = await fetch('/api/auth/me');
-                    if (response.status === 401) {
-                        navigate(confirm('Not logged in?')? '/auth' : '/');
-                        return;
-                    }
+         const fetchData = async () => {
+             try {
+                 if (!cancelled) {
+                     const response = await fetch('/api/auth/me', {
+                         credentials: "include"
+                     });
+                     if (response.status === 401) {
+                         navigate(confirm('Not logged in?')? '/auth' : '/');
+                         return;
+                     }
 
-                    const data = await response.json();
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        };
+                     const data = await response.json();
+                 }
+             } catch (err) {
+                 console.log(err);
+             }
+         };
 
         fetchData();
 

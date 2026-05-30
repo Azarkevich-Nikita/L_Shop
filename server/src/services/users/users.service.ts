@@ -61,22 +61,27 @@ class UserService {
         return newUser;
     }
 
-    async login(userData: UserDTO){
-        const users: User[] = await jsonStorageService.readJSON(usersPath);
+    async login(userData: any){
+         const users: User[] = await jsonStorageService.readJSON(usersPath);
 
-        const existingUser: User | undefined = users.find((user: User)=> user.email === userData.email);
+         // Find user by email, phone, or name
+         const existingUser: User | undefined = users.find((user: User) =>
+             user.email === userData.email ||
+             user.phone === userData.email ||
+             user.name === userData.email
+         );
 
-        if (!existingUser) {
-            throw new Error("User does not exist!");
-        }
+         if (!existingUser) {
+             throw new Error("User does not exist!");
+         }
 
-        if(await HashService.comparePassword(userData.password, existingUser.hashed_password)) {
-            return existingUser;
-        }
-        else{
-            throw new Error("Login or passwords do not match!");
-        }
-    }
+         if(await HashService.comparePassword(userData.password, existingUser.hashed_password)) {
+             return existingUser;
+         }
+         else{
+             throw new Error("Login or passwords do not match!");
+         }
+     }
 /*
     async me() {
 

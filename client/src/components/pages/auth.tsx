@@ -102,18 +102,19 @@ function Auth() {
       return;
     }
 
-    setLoading(true);
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
-        }),
-      });
+     setLoading(true);
+     try {
+       const response = await fetch("/api/auth/register", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         credentials: "include",
+         body: JSON.stringify({
+           name: formData.name,
+           email: formData.email,
+           phone: formData.phone,
+           password: formData.password,
+         }),
+       });
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
