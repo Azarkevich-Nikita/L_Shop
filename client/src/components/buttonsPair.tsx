@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Button from './Button';
+import Button, { type ButtonSize, type ButtonVariant } from './Button';
 import '../style/buttons-pair.scss';
 
 interface ButtonsPairProps {
   firstImg: string;
   secondImg: string;
-  variant?: string;
-  size?: string;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   onFirstClick?: (e: React.MouseEvent) => void;
 }
 
@@ -20,8 +20,8 @@ function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l", onF
   return (
     <div className="btns-pair">
       <Button
-        variant="primary"
-        size="l"
+        variant={variant}
+        size={size}
         onClick={onFirstClick}
         type="button"
       >
@@ -29,7 +29,7 @@ function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l", onF
       </Button>
       <Button
         variant={isActive ? "secondary" : "stroke"}
-        size="l"
+        size={size}
         onClick={toggleActive}
       >
         <img src={secondImg} alt="" />

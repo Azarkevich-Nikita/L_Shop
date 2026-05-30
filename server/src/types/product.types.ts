@@ -1,4 +1,4 @@
-export interface Products {
+export interface Product {
     id: number,
     title: string,
     price: number,
@@ -9,3 +9,5 @@ export interface Products {
     property: string[],
     image_url: string[]
 }
+
+export type Products = Product;

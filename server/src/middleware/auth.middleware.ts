@@ -12,7 +12,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const sessionsPath = path.join(__dirname, "../../database/sessions.json");
 
-
+/**
+ * Checks the currSid cookie, validates the stored session and attaches userId to the request.
+ *
+ * @param req - Express request with cookies.
+ * @param res - Express response.
+ * @param next - Express next callback.
+ * @returns 401 response for missing, unknown or expired sessions.
+ */
 export async function authMiddleware(req: Request, res: Response, next: NextFunction){
     const sid = req.cookies.currSid;
 

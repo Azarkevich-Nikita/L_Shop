@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface Banner {
-  id: number;
-  image_url: string;
-  link?: string;
-  title?: string;
-}
+import type { Banner } from "../../types/api";
 
 function Home() {
   const navigate = useNavigate();
@@ -20,7 +14,7 @@ function Home() {
       try {
         const res = await fetch("/api/banners");
         if (res.ok) {
-          const data = await res.json();
+          const data = await res.json() as Banner[];
           if (!cancelled && Array.isArray(data)) {
             setBanners(data);
           }

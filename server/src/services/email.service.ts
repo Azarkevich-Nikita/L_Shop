@@ -1,6 +1,23 @@
 import nodemailer from "nodemailer";
 
 class EmailService {
+    /**
+     * Sends the password reset code by email.
+     *
+     * @param email - Recipient email address.
+     * @param code - Six-digit reset code.
+     */
+    async sendPasswordResetEmail(email: string, code: string): Promise<void> {
+        await this.sendResetCode(email, code);
+    }
+
+    /**
+     * Builds and sends a reset-code email through the configured SMTP server.
+     *
+     * @param email - Recipient email address.
+     * @param code - Six-digit reset code.
+     * @throws Error when SMTP credentials are missing.
+     */
     async sendResetCode(email: string, code: string): Promise<void> {
         const user: string | undefined = process.env.MAIL_USER;
         const pass: string | undefined = process.env.MAIL_PASSWORD;
@@ -95,4 +112,3 @@ class EmailService {
 }
 
 export default new EmailService();
-

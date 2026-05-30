@@ -14,6 +14,12 @@ const sessionsPath = path.join(__dirname, "../../database/sessions.json");
 
 
 class SessionsService {
+    /**
+     * Creates a short-lived session for a user.
+     *
+     * @param currentUserId - Authenticated user ID.
+     * @returns Created session record.
+     */
     async createSession(currentUserId: number): Promise<Session> {
         const sessions: Session[] = await jsonStorageService.readJSON(sessionsPath);
 
@@ -30,6 +36,13 @@ class SessionsService {
         return newSession;
     }
 
+    /**
+     * Finds and validates a session by session ID.
+     *
+     * @param sid - Session identifier from cookie.
+     * @returns Active session record.
+     * @throws Error when the session is missing or expired.
+     */
     async getSessionInfoBySessionId(sid: string): Promise<Session> {
         const sessions: Session[] = await jsonStorageService.readJSON(sessionsPath);
         const session = sessions.find(s => s.sessionId === sid);
@@ -45,6 +58,11 @@ class SessionsService {
         return session;
     }
 
+    /**
+     * Deletes all sessions for the user represented by the session.
+     *
+     * @param session - Session whose user should be logged out.
+     */
     async deleteSession(session: Session): Promise<void>{
          let sessions: Session[] = await JsonStorageService.readJSON(sessionsPath);
 
@@ -53,6 +71,11 @@ class SessionsService {
          await jsonStorageService.writeJSON(sessionsPath, sessions);
      }
 
+    /**
+     * Deletes a single session by session ID.
+     *
+     * @param sessionId - Session identifier from cookie.
+     */
     async deleteSessionBySessionId(sessionId: string): Promise<void> {
         let sessions: Session[] = await JsonStorageService.readJSON(sessionsPath);
         sessions = sessions.filter(s => s.sessionId !== sessionId);

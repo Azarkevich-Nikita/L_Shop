@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import '../../style/auth.scss';
+import type { LoginRequest } from '../../types/api';
 
 interface LoginForm {
   identifier: string;
@@ -13,7 +14,12 @@ interface FormErrors {
   password?: string;
 }
 
-// Определяем тип идентификатора
+/**
+ * Detects which identifier format the user entered.
+ *
+ * @param value - Raw login identifier.
+ * @returns Identifier kind or null when the value is invalid.
+ */
 const detectIdentifierType = (value: string): "email" | "phone" | "name" | null => {
   if (!value.trim()) return null;
   if (value.includes("@")) return "email";
@@ -22,6 +28,12 @@ const detectIdentifierType = (value: string): "email" | "phone" | "name" | null 
   return null;
 };
 
+/**
+ * Validates login form fields before sending credentials to the API.
+ *
+ * @param formData - Current login form state.
+ * @returns Field-level validation errors.
+ */
 const validate = (formData: LoginForm): FormErrors => {
   const errors: FormErrors = {};
 
@@ -74,15 +86,15 @@ function Login() {
 
     setLoading(true);
     try {
-      // Отправляем в поле email — бэкенд сам разберёт тип
+      const body: LoginRequest = {
+        email: formData.identifier,
+        password: formData.password,
+      };
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          email: formData.identifier,
-          password: formData.password,
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {

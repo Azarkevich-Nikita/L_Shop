@@ -4,18 +4,7 @@ import Filters from '../filters';
 import ItemCard from '../itemCard'
 import Modal from '../modalCard'
 import '../../style/catalogue.scss'
-
-interface CatalogItem {
-    id: number;
-    title: string;
-    price: number;
-    created_from: string;
-    is_stock: boolean;
-    weight: number;
-    created_date: string;
-    property: string[];
-    image_url: string[];
-}
+import type { BasketItem, CatalogItem } from '../../types/api';
 
 function Catalogue() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -42,16 +31,17 @@ function Catalogue() {
     // Загрузка данных при изменении page
     const handleAddToCart = (item: CatalogItem) => async () => {
         try {
+            const body: BasketItem = {
+                product_id: item.id,
+                price: item.price,
+                weight: item.weight ?? 0,
+                quantity: 1,
+            };
             const res = await fetch('/api/basket', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    product_id: item.id,
-                    price: item.price,
-                    weight: item.weight ?? 0,
-                    quantity: 1,
-                }),
+                body: JSON.stringify(body),
             });
             if (!res.ok) {
                 const data = await res.json().catch(() => ({}));
@@ -72,7 +62,7 @@ function Catalogue() {
                 params['page'] = String(page);
 
                 const response = await fetch(`/api/catalog?${new URLSearchParams(params).toString()}`);
-                const data = await response.json();
+                const data = await response.json() as CatalogItem[];
 
                 if (data.length === 0) {
                     setHasMore(false);
@@ -111,8 +101,6 @@ function Catalogue() {
                         key={item.id}
                         id={item.id}
                         label={item.title}
-                        cost={item.price}
-                        image={item.image_url[0]}
                         cost={item.price} 
                         image={item.image_url?.[0] ?? ''}
                         weight={item.weight}
