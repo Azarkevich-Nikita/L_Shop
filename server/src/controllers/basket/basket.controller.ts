@@ -1,6 +1,8 @@
 import {request, type Request, type Response} from "express";
 // @ts-ignore
 import BasketService from "../../services/basket/basket.service.ts";
+//@ts-ignore
+import basketService from "../../services/basket/basket.service.ts";
 
 class BasketController {
 
@@ -40,9 +42,9 @@ class BasketController {
         try {
             const userId = req.userId;
             if(!userId) throw Error("User not found");
-            const { type } = req.body;
+            const { type, postalCode, address } = req.body;
 
-            await BasketService.setDelivery(userId, type);
+            await BasketService.setDelivery(userId, type, postalCode, address);
 
             res.status(200).json({ message: "Delivery updated" });
         }
@@ -120,6 +122,34 @@ class BasketController {
             await BasketService.removeItem(userId, productId);
 
             res.status(200).json({ message: "Item removed" });
+        }
+        catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Unknown error occurred" });
+            }
+        }
+    }
+
+    async Buy(req: Request, res: Response) {
+        try {
+            const userId = req.userId;
+            if(!userId) throw Error("User not found");
+            const { address, phone, email, changeFrom } = req.body;
+
+            if (!address) {
+                throw new Error("Address is required");
+            }
+
+            await basketService.Buy(userId, {
+                address,
+                phone,
+                email,
+                changeFrom: typeof changeFrom === "number" ? changeFrom : null,
+            });
+
+            res.status(200).json({ message: "Order created" });
         }
         catch (error: unknown) {
             if (error instanceof Error) {

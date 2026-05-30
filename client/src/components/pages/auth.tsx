@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import '../../style/auth.scss';
@@ -9,6 +9,7 @@ interface AuthForm {
   phone: string;
   password: string;
   confirmPassword: string;
+  agree: boolean;
 }
 
 interface FormErrors {
@@ -17,6 +18,7 @@ interface FormErrors {
   phone?: string;
   password?: string;
   confirmPassword?: string;
+  agree?: string;
 }
 
 type Field = {
@@ -65,6 +67,10 @@ const validate = (formData: AuthForm): FormErrors => {
     errors.confirmPassword = "Пароли не совпадают";
   }
 
+  if (!formData.agree) {
+    errors.agree = "Нужно принять соглашение";
+  }
+
   return errors;
 };
 
@@ -76,14 +82,15 @@ function Auth() {
     phone: "",
     password: "",
     confirmPassword: "",
+    agree: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (field: keyof AuthForm, value: string) => {
+  const handleInputChange = (field: keyof AuthForm, value: string | boolean) => {
     // Для имени — не допускаем нелатинские символы
-    if (field === "name" && value && !/^[a-zA-Z]*$/.test(value)) return;
+    if (field === "name" && typeof value === "string" && value && !/^[a-zA-Z]*$/.test(value)) return;
 
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Убираем ошибку поля при вводе
@@ -92,7 +99,7 @@ function Auth() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setServerError(null);
 
@@ -102,19 +109,19 @@ function Auth() {
       return;
     }
 
-     setLoading(true);
-     try {
-       const response = await fetch("/api/auth/register", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         credentials: "include",
-         body: JSON.stringify({
-           name: formData.name,
-           email: formData.email,
-           phone: formData.phone,
-           password: formData.password,
-         }),
-       });
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }),
+      });
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
@@ -171,23 +178,42 @@ function Auth() {
                 />
               </div>
               {errors[field.id] && (
-                <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors[field.id]}</p>
+                <p className="auth-error-text">{errors[field.id]}</p>
               )}
             </div>
           ))}
 
           {serverError && <p style={{ color: "red", fontSize: "14px", marginTop: "8px" }}>{serverError}</p>}
 
+          <div className="auth-checkbox-row">
+            <label className="auth-checkbox-label">
+              <input
+                type="checkbox"
+                checked={formData.agree}
+                onChange={(e) => handleInputChange("agree", e.target.checked)}
+              />
+              <span>
+                Я принимаю{" "}
+                <a
+                  href="#agreement"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/agreement");
+                  }}
+                  style={{ color: '#97302c' }}
+                >
+                  пользовательское соглашение
+                </a>
+              </span>
+            </label>
+            {errors.agree && <p className="auth-error-text">{errors.agree}</p>}
+          </div>
+
           <Button type="submit" variant="primary" size="m" className="auth-submit-button" disabled={loading}>
             {loading ? "Загрузка..." : "Зарегистрироваться"}
           </Button>
 
-          <p className="auth-terms">
-            <span>Регистрируясь, вы соглашаетесь с </span>
-            <a href="#terms">условиями использования</a>
-            <span> и </span>
-            <a href="#privacy">политикой конфиденциальности</a>
-          </p>
+          
         </form>
       </main>
 

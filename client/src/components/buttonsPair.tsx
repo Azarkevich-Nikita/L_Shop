@@ -3,14 +3,14 @@ import Button from './Button';
 import '../style/buttons-pair.scss';
 
 interface ButtonsPairProps {
-  label: string;
   firstImg: string;
   secondImg: string;
   variant?: string;
   size?: string;
+  onFirstClick?: (e: React.MouseEvent) => void;
 }
 
-function ButtonsPair({ label, firstImg, secondImg, variant = "primary", size = "l" }: ButtonsPairProps) {
+function ButtonsPair({ firstImg, secondImg, variant = "primary", size = "l", onFirstClick }: ButtonsPairProps) {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const toggleActive = () => {
@@ -22,8 +22,9 @@ function ButtonsPair({ label, firstImg, secondImg, variant = "primary", size = "
       <Button
         variant="primary"
         size="l"
+        onClick={onFirstClick}
+        type="button"
       >
-        {label}
         <img src={firstImg} alt="" />
       </Button>
       <Button

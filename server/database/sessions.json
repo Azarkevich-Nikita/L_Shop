@@ -1,1 +1,92 @@
-[]
+[
+  {
+    "sessionId": "ab123",
+    "userId": 4,
+    "expiresAt": 1700000000000
+  },
+  {
+    "sessionId": "b8d79549-6859-44ca-8098-c991b93b10df",
+    "userId": 1772131374896,
+    "expiresAt": 1772131975008
+  },
+  {
+    "sessionId": "90322a44-f6c7-4b38-9d64-11e4e9ae2fa6",
+    "userId": 1772131374896,
+    "expiresAt": 1772132690620
+  },
+  {
+    "sessionId": "2549b851-fd40-4ea9-84cf-b590ed16445e",
+    "userId": 1771395147647,
+    "expiresAt": 1772185553087
+  },
+  {
+    "sessionId": "59bd456e-49ae-4bf8-8c98-5d50c6ca77aa",
+    "userId": 1771395147647,
+    "expiresAt": 1772187308405
+  },
+  {
+    "sessionId": "1b020d76-dffa-4e7b-bd6c-1348e3a14c32",
+    "userId": 1771395147647,
+    "expiresAt": 1772187955693
+  },
+  {
+    "sessionId": "e974f370-30a9-471a-a8d9-8632395aca79",
+    "userId": 1771395147647,
+    "expiresAt": 1772258889345
+  },
+  {
+    "sessionId": "d889a1ef-5faf-4b8f-8d6b-9b13255fe72f",
+    "userId": 1772868654888,
+    "expiresAt": 1772869255007
+  },
+  {
+    "sessionId": "55e4de2d-cb8d-40c3-ab8f-9615742b72f7",
+    "userId": 1772868654888,
+    "expiresAt": 1772869503121
+  },
+  {
+    "sessionId": "9041b5f6-b9ea-4d74-893f-1ce2cde173de",
+    "userId": 1772868654888,
+    "expiresAt": 1773431490614
+  },
+  {
+    "sessionId": "24253bf5-5819-46b5-956c-189a5173cd86",
+    "userId": 1772868654888,
+    "expiresAt": 1773470754210
+  },
+  {
+    "sessionId": "673a33e7-c423-4cc2-a011-c34a50259997",
+    "userId": 1772868654888,
+    "expiresAt": 1773471447380
+  },
+  {
+    "sessionId": "48c7bb5f-dff6-452d-8869-257a4f331706",
+    "userId": 1772868654888,
+    "expiresAt": 1773473165337
+  },
+  {
+    "sessionId": "1688eeaa-4051-48e7-a6e0-72722dbdadb9",
+    "userId": 1772868654888,
+    "expiresAt": 1773473871246
+  },
+  {
+    "sessionId": "e731df85-54a9-4ba5-8a0a-7553c52920d4",
+    "userId": 1772868654888,
+    "expiresAt": 1773474917730
+  },
+  {
+    "sessionId": "f3250827-9cb1-4bf1-acbf-88c4fd487fa1",
+    "userId": 1772868654888,
+    "expiresAt": 1773475579718
+  },
+  {
+    "sessionId": "5aac6216-6be2-4298-bc6b-c0e23a816ab3",
+    "userId": 1772868654888,
+    "expiresAt": 1773476534853
+  },
+  {
+    "sessionId": "91a8ad06-969c-4cc2-aedd-89ec00e3589d",
+    "userId": 1772868654888,
+    "expiresAt": 1773478404580
+  }
+]

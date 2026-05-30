@@ -52,6 +52,8 @@ function Button({ variant = 'primary', size = 'l', className, children, onClick,
 
   return (
     <button
+      type={type}
+      disabled={disabled}
       className={clsx('btn', `btn--${variant}`, `btn--${size}`, className)}
       onClick={handleClick}
     >

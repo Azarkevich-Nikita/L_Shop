@@ -14,8 +14,14 @@ const __dirname = path.dirname(__filename);
 const productsPath = path.join(__dirname, "../../../database/products.json");
 
 class ProductService {
-    async getProducts(filter: ProductFilter): Promise<Pick<Product, 'id' | 'title' | 'price' | 'image_url'>[]> {
+    async getProducts(filter: ProductFilter): Promise<Pick<Product, 'id' | 'title' | 'price' | 'image_url' | 'weight'>[]> {
         let products: Product[] = await jsonStorageService.readJSON(productsPath);
+
+        if (filter.title) {
+            products = products.filter(p =>
+                p.title.toLowerCase().includes(filter.title!.toLowerCase())
+            );
+        }
 
         if (filter.created_from) {
             products = products.filter(p =>
@@ -32,6 +38,36 @@ class ProductService {
         if (filter.max_price !== undefined) {
             products = products.filter(p =>
                 p.price <= filter.max_price!
+            );
+        }
+
+        if (filter.is_stock) {
+            products = products.filter(p =>
+                p.is_stock === filter.is_stock
+            );
+        }
+
+        if (filter.min_weight !== undefined) {
+            products = products.filter(p =>
+                (p.weight ?? 0) >= filter.min_weight!
+            );
+        }
+
+        if (filter.max_weight !== undefined) {
+            products = products.filter(p =>
+                (p.weight ?? 0) <= filter.max_weight!
+            );
+        }
+
+        if (filter.created_date_from) {
+            products = products.filter(p =>
+                (p.created_date ?? '') >= filter.created_date_from!
+            );
+        }
+
+        if (filter.created_date_to) {
+            products = products.filter(p =>
+                (p.created_date ?? '') <= filter.created_date_to!
             );
         }
 
@@ -57,7 +93,8 @@ class ProductService {
             id: p.id,
             title: p.title,
             price: p.price,
-            image_url: p.image_url
+            image_url: p.image_url,
+            weight: p.weight ?? 0
         }));
     }
 

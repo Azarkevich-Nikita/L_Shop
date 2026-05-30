@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import '../../style/auth.scss';
@@ -62,7 +62,7 @@ function Login() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setServerError(null);
 
@@ -72,28 +72,23 @@ function Login() {
       return;
     }
 
-     setLoading(true);
-     try {
-       // Отправляем в поле email — бэкенд сам разберёт тип
-       const response = await fetch("/api/auth/login", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         credentials: "include",
-         body: JSON.stringify({
-           email: formData.identifier,
-           password: formData.password,
-         }),
-       });
+    setLoading(true);
+    try {
+      // Отправляем в поле email — бэкенд сам разберёт тип
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: formData.identifier,
+          password: formData.password,
+        }),
+      });
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         setServerError(data?.error || "Неверный логин или пароль");
         return;
-      }
-
-      const data = await response.json();
-      if (data?.token) {
-        localStorage.setItem("token", data.token);
       }
 
       navigate('/');
@@ -141,7 +136,7 @@ function Login() {
               />
             </div>
             {errors.identifier && (
-              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.identifier}</p>
+              <p className="auth-error-text">{errors.identifier}</p>
             )}
           </div>
 
@@ -160,9 +155,21 @@ function Login() {
               />
             </div>
             {errors.password && (
-              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.password}</p>
+              <p className="auth-error-text">{errors.password}</p>
             )}
           </div>
+
+          <p className="auth-terms auth-terms-login" style={{ marginTop: "8px" }}>
+            <a
+              href="#forgot"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/forgot-password');
+              }}
+            >
+              Забыли пароль?
+            </a>
+          </p>
 
           {serverError && <p style={{ color: "red", fontSize: "14px", marginTop: "8px" }}>{serverError}</p>}
 
