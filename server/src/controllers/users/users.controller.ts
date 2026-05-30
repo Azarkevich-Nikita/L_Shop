@@ -20,15 +20,15 @@ class userController {
     }
 
     async register(req: Request, res: Response): Promise<void> {
-        try {
-            const newUser: User = await userService.register(req.body);
+         try {
+             const newUser: User = await userService.register(req.body);
 
             const session: Session = await sessionService.createSession(newUser.id);
 
-            res.cookie("currSid", session.sessionId, {
-                httpOnly: true,
-                maxAge: 600_000
-            });
+             res.cookie("currSid", session.sessionId, {
+                 httpOnly: true,
+                 maxAge: 600_000
+             });
 
             res.status(201).json({ message: "User registered successfully", user: newUser });
         } catch (error: unknown) {
@@ -44,12 +44,12 @@ class userController {
         try {
             const user: User = await UsersService.login(req.body);
 
-            const session: Session = await sessionsService.createSession(user.id);
+             const session: Session = await sessionsService.createSession(user.id);
 
-            res.cookie("currSid", session.sessionId, {
-                httpOnly: true,
-                maxAge: 600_000
-            });
+             res.cookie("currSid", session.sessionId, {
+                 httpOnly: true,
+                 maxAge: 600_000
+             });
 
             res.status(201).json({ message: "User login successfully" });
         } catch (error: unknown) {
