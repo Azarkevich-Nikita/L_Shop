@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import '../../style/auth.scss';
+import type { RegisterRequest } from '../../types/api';
 
 interface AuthForm {
   name: string;
@@ -27,6 +28,12 @@ type Field = {
   type: string;
 }
 
+/**
+ * Validates registration form fields before calling the register endpoint.
+ *
+ * @param formData - Current registration form state.
+ * @returns Field-level validation errors.
+ */
 const validate = (formData: AuthForm): FormErrors => {
   const errors: FormErrors = {};
 
@@ -111,16 +118,17 @@ function Auth() {
 
     setLoading(true);
     try {
+      const body: RegisterRequest = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      };
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {

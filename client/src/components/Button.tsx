@@ -2,8 +2,8 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import '../style/button.scss';
 
-type Variant = 'primary' | 'secondary' | 'stroke';
-type Size = 's' | 'm' | 'l';
+export type ButtonVariant = 'primary' | 'secondary' | 'stroke';
+export type ButtonSize = 's' | 'm' | 'l';
 
 interface Ripple {
   key: number;
@@ -13,8 +13,8 @@ interface Ripple {
 }
 
 interface ButtonProps {
-  variant?: Variant;
-  size?: Size;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   className?: string;
   children?: React.ReactNode;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -30,10 +30,20 @@ function Button({ variant = 'primary', size = 'l', className, children, onClick,
     if (onClick) onClick(event);
   };
 
+  /**
+   * Removes the completed ripple animation from local button state.
+   *
+   * @param key - Ripple identifier generated when the button was clicked.
+   */
   const removeRipple = (key: number) => {
     setRipples((prev) => prev.filter((ripple) => ripple.key !== key));
   };
 
+  /**
+   * Calculates ripple geometry relative to the clicked button.
+   *
+   * @param event - Mouse click event from the button.
+   */
   const addRipple = (event: React.MouseEvent<HTMLButtonElement>) => {
     const button = event.currentTarget;
     const rect = button.getBoundingClientRect();

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import "../../style/auth.scss";
+import type { DeliveryRequest } from "../../types/api";
 
 interface DeliveryForm {
   postalCode: string;
@@ -13,6 +14,12 @@ interface FormErrors {
   address?: string;
 }
 
+/**
+ * Validates delivery form fields before sending delivery settings to the API.
+ *
+ * @param formData - Current delivery form state.
+ * @returns Field-level validation errors.
+ */
 const validate = (formData: DeliveryForm): FormErrors => {
   const errors: FormErrors = {};
 
@@ -63,15 +70,16 @@ function Delivery() {
     setSubmitting(true);
 
     try {
+      const body: DeliveryRequest = {
+        type: "courier",
+        postalCode: formData.postalCode.trim(),
+        address: formData.address.trim(),
+      };
       const response = await fetch("/api/basket/delivery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          type: "courier",
-          postalCode: formData.postalCode.trim(),
-          address: formData.address.trim(),
-        }),
+        body: JSON.stringify(body),
       });
 
       if (response.status === 401) {
@@ -171,4 +179,3 @@ function Delivery() {
 }
 
 export default Delivery;
-

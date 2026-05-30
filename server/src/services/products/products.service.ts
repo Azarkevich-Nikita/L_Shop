@@ -98,10 +98,11 @@ class ProductService {
         }));
     }
 
-    async getProductById(id: string | string[]): Promise<Product> {
+    async getProductById(id: string | string[]): Promise<Product | undefined> {
         const products: Product[] = await jsonStorageService.readJSON(productsPath);
+        const productId = Number(Array.isArray(id) ? id[0] : id);
 
-        return products.find((prod: Product) => prod.id == id);
+        return products.find((prod: Product) => prod.id === productId);
     }
 
     async getAllCreatedPlace(){

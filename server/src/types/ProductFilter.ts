@@ -1,4 +1,4 @@
-interface ProductFilter {
+export interface ProductFilter {
     title?: string;
     created_from?: string;
     min_price?: number;

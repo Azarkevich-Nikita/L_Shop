@@ -2,14 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import '../../style/auth.scss';
-
-interface UserInfo {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  created_at: string;
-}
+import type { ProfileUpdateRequest, UserInfo, UserInfoResponse } from '../../types/api';
 
 interface ProfileForm {
   name: string;
@@ -27,6 +20,13 @@ interface FormErrors {
   confirmPassword?: string;
 }
 
+/**
+ * Validates profile form fields before sending them to the API.
+ *
+ * @param formData - Current profile form state.
+ * @param isPasswordChange - Whether password fields should be validated.
+ * @returns Field-level validation errors.
+ */
 const validate = (formData: ProfileForm, isPasswordChange: boolean): FormErrors => {
   const errors: FormErrors = {};
 
@@ -93,7 +93,7 @@ function Profile() {
           if (!cancelled) setServerError('Не удалось загрузить данные');
           return;
         }
-        const data = await response.json();
+        const data = await response.json() as UserInfoResponse;
         if (!cancelled && data?.userInfo) {
           setUserInfo(data.userInfo);
           setFormData((prev) => ({
@@ -145,7 +145,7 @@ function Profile() {
 
     setSaving(true);
     try {
-      const body: { name?: string; email?: string; phone?: string; password?: string; confirmPassword?: string } = {
+      const body: ProfileUpdateRequest = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,

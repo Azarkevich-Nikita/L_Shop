@@ -1,22 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
-
-interface BasketItem {
-  product_id: number;
-  quantity: number;
-  price: number;
-  weight: number;
-}
-
-interface Basket {
-  user_id: number;
-  items: BasketItem[];
-  deliveryPrice?: number;
-  deliveryType?: "pickup" | "courier";
-  postalCode?: string;
-  address?: string;
-}
+import type { Basket, BuyRequest, ProductIdRequest, TotalPriceResponse } from "../../types/api";
 
 function Cart() {
   const navigate = useNavigate();
@@ -41,8 +26,8 @@ function Cart() {
         return;
       }
 
-      const basketData = await basketRes.json().catch(() => null);
-      const totalData = await totalRes.json().catch(() => null);
+      const basketData = await basketRes.json().catch(() => null) as Basket | null;
+      const totalData = await totalRes.json().catch(() => null) as TotalPriceResponse | null;
 
       if (!basketRes.ok) {
         setError(basketData?.error || "Не удалось загрузить корзину");
@@ -70,11 +55,12 @@ function Cart() {
 
   const handleRemove = async (productId: number) => {
     try {
+      const body: ProductIdRequest = { productId };
       const res = await fetch("/api/basket", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify(body),
       });
       if (res.status === 401) {
         navigate("/auth");
@@ -95,16 +81,17 @@ function Cart() {
     if (!basket || !basket.items.length) return;
     setOrdering(true);
     try {
+      const body: BuyRequest = {
+        address: basket.address || "",
+        phone: "",
+        email: "",
+        changeFrom: null,
+      };
       const res = await fetch("/api/basket/buy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          address: basket.address || "",
-          phone: "",
-          email: "",
-          changeFrom: null,
-        }),
+        body: JSON.stringify(body),
       });
       if (res.status === 401) {
         navigate("/auth");

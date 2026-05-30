@@ -9,8 +9,19 @@ import productsController from "../controllers/products/products.controller.ts";
 import bannersController from "../controllers/banners/banners.controller.ts";
 //@ts-ignore
 import { authMiddleware } from "../middleware/auth.middleware.ts";
+//@ts-ignore
+import { openApiSpec } from "../docs/openapi.ts";
+//@ts-ignore
+import { renderSwaggerPage } from "../docs/swaggerPage.ts";
 
 const router = express.Router();
+
+router.get("/docs", (_req, res) => {
+    res.type("html").send(renderSwaggerPage());
+});
+router.get("/docs/openapi.json", (_req, res) => {
+    res.status(200).json(openApiSpec);
+});
 
 router.get("/basket",authMiddleware, basketController.getBasketByUserID);
 router.get("/basket/price",authMiddleware, basketController.getTotalPrice);
@@ -31,6 +42,7 @@ router.post("/auth/logout", authMiddleware, userController.logout)
 router.post("/auth/register", userController.register);
 router.post("/auth/login", userController.login);
 router.get("/auth/me", authMiddleware, userController.me);
+router.patch("/auth/me", authMiddleware, userController.updateMe);
 
 router.post("/auth/reset-password", userController.resetPassword);
 router.post("/auth/reset-password-code", userController.resetPasswordCode);

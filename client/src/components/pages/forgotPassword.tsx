@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import "../../style/auth.scss";
+import type { PasswordResetConfirmRequest, PasswordResetRequest } from "../../types/api";
 
 interface RequestForm {
   email: string;
@@ -46,11 +47,12 @@ function ForgotPassword() {
 
     setLoading(true);
     try {
+      const body: PasswordResetRequest = { email: requestForm.email };
       const response = await fetch("/api/auth/password-reset/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email: requestForm.email }),
+        body: JSON.stringify(body),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -92,16 +94,17 @@ function ForgotPassword() {
 
     setLoading(true);
     try {
+      const body: PasswordResetConfirmRequest = {
+        email: confirmForm.email,
+        code: confirmForm.code.trim(),
+        password: confirmForm.password,
+        confirmPassword: confirmForm.confirmPassword,
+      };
       const response = await fetch("/api/auth/password-reset/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          email: confirmForm.email,
-          code: confirmForm.code.trim(),
-          password: confirmForm.password,
-          confirmPassword: confirmForm.confirmPassword,
-        }),
+        body: JSON.stringify(body),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -259,4 +262,3 @@ function ForgotPassword() {
 }
 
 export default ForgotPassword;
-

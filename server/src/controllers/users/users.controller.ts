@@ -7,8 +7,8 @@ import sessionService from "../../services/sessions.service.ts";
 import passwordResetService from "../../services/passwordReset.service.ts";
 //@ts-ignore
 import emailService from "../../services/email.service.ts";
-// @ts-ignore
-import type { User } from "../models/users.model.ts";
+//@ts-ignore
+import type { User } from "../../types/user.types.ts";
 // @ts-ignore
 import type { Session } from "../../types/session.types.ts";
 // @ts-ignore
@@ -42,9 +42,9 @@ class userController {
 
     async login(req: Request, res: Response): Promise<void> {
         try {
-            const user: User = await UsersService.login(req.body);
+            const user: User = await userService.login(req.body);
 
-             const session: Session = await sessionsService.createSession(user.id);
+             const session: Session = await sessionService.createSession(user.id);
 
              res.cookie("currSid", session.sessionId, {
                  httpOnly: true,
@@ -231,7 +231,7 @@ class userController {
         try {
             const sid = req.cookies?.currSid;
             if (sid) {
-                await sessionsService.deleteSessionBySessionId(sid);
+                await sessionService.deleteSessionBySessionId(sid);
             }
             res.clearCookie("currSid", { httpOnly: true, maxAge: 600_000 });
             res.status(200).json({ message: "Logged out" });
