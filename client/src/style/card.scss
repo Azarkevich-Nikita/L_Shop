@@ -1,0 +1,41 @@
+@use "color";
+@use "utils";
+
+.card {
+  @include utils.flex(column, 10px, center, center);
+  padding: 16px;
+  border-radius: 44px;
+  width: 100%;
+  aspect-ratio: 5/7;
+
+  background-color: color.$neutral-17;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-5px) scale(1.01);
+  }
+
+  .text-container {
+    font-size: 14px;
+    @include utils.flex(column, 8px, left, start);
+    width: 100%;
+  }
+
+  .title {
+    font-weight: 500;
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .img {
+    aspect-ratio: 109 / 100;
+    width: 100%;
+    background-color: color.$neutral-90;
+
+    border-radius: 28px;
+  }
+}

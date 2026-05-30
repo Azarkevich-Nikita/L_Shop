@@ -1,0 +1,47 @@
+[
+  {
+    "user_id": 1,
+    "order_id": 1,
+    "price": 100,
+    "delivery_address": "Minsk",
+    "items": [
+      {
+        "id": 1,
+        "product_id": 1,
+        "weight": 67,
+        "price": 49,
+        "quantity": 13
+      },
+      {
+        "id": 2,
+        "product_id": 3,
+        "weight": 17,
+        "price": 13,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "user_id": 1772868654888,
+    "order_id": 1773477808709,
+    "price": 67.7,
+    "delivery_address": "2221111",
+    "phone": "",
+    "email": "",
+    "change_from": null,
+    "items": [
+      {
+        "product_id": 1,
+        "price": 8.5,
+        "weight": 5000,
+        "quantity": 1
+      },
+      {
+        "product_id": 2,
+        "price": 9.2,
+        "weight": 3000,
+        "quantity": 1
+      }
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "image_url": "https://placehold.co/1200x320/eee/999?text=Акции+в+каталоге",
+    "link": "/catalogue",
+    "title": "Акции в каталоге"
+  },
+  {
+    "id": 2,
+    "image_url": "https://placehold.co/1200x320/ddd/888?text=Новые+поступления",
+    "link": "/catalogue",
+    "title": "Новые поступления"
+  }
+]
